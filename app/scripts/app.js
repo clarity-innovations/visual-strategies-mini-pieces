@@ -119,106 +119,106 @@ define(function (require) {
       selector: '#restart',
       clickEvent: Constants.Events.REQUEST_START_OVER,
     },
-    {
-      selector: '#shade-question',
-      clickEvent: Constants.Events.TOGGLE_SHADE_QUESTION,
-      addClassOn: [
-        {
-          eventID: Constants.Events.SHOW_SHADE_QUESTION,
-          cssClass: 'on'
-        }
-      ],
-      removeClassOn: [
-        {
-          eventID: Constants.Events.HIDE_SHADE_QUESTION,
-          cssClass: 'on'
-        },
-        {
-          eventID: Constants.Events.START_OVER_DONE,
-          cssClass: 'on'
-        }
-      ]
-    },
-    {
-      selector: '#shade-hand-left',
-      clickEvent: Constants.Events.TOGGLE_SHADE_HAND_LEFT,
-      addClassOn: [
-        {
-          eventID: Constants.Events.SHOW_SHADE_HAND_LEFT,
-          cssClass: 'on'
-        }
-      ],
-      removeClassOn: [
-        {
-          eventID: Constants.Events.HIDE_SHADE_HAND_LEFT,
-          cssClass: 'on'
-        },
-        {
-          eventID: Constants.Events.START_OVER_DONE,
-          cssClass: 'on'
-        }
-      ]
-    },
-    {
-      selector: '#shade-hand-right',
-      clickEvent: Constants.Events.TOGGLE_SHADE_HAND_RIGHT,
-      addClassOn: [
-        {
-          eventID: Constants.Events.SHOW_SHADE_HAND_RIGHT,
-          cssClass: 'on'
-        }
-      ],
-      removeClassOn: [
-        {
-          eventID: Constants.Events.HIDE_SHADE_HAND_RIGHT,
-          cssClass: 'on'
-        },
-        {
-          eventID: Constants.Events.START_OVER_DONE,
-          cssClass: 'on'
-        }
-      ]
-    },
-    {
-      selector: '#shade-pocket',
-      clickEvent: Constants.Events.TOGGLE_SHADE_POCKET,
-      addClassOn: [
-        {
-          eventID: Constants.Events.SHOW_SHADE_POCKET,
-          cssClass: 'on'
-        }
-      ],
-      removeClassOn: [
-        {
-          eventID: Constants.Events.HIDE_SHADE_POCKET,
-          cssClass: 'on'
-        },
-        {
-          eventID: Constants.Events.START_OVER_DONE,
-          cssClass: 'on'
-        }
-      ]
-    },
-    {
-      selector: '#shade-bank',
-      clickEvent: Constants.Events.TOGGLE_SHADE_BANK,
-      addClassOn: [
-        {
-          eventID: Constants.Events.SHOW_SHADE_BANK,
-          cssClass: 'on'
-        }
-      ],
-      removeClassOn: [
-        {
-          eventID: Constants.Events.HIDE_SHADE_BANK,
-          cssClass: 'on'
-        },
-        {
-          eventID: Constants.Events.START_OVER_DONE,
-          cssClass: 'on'
-        }
-      ]
-    },
+    // {
+    //   selector: '#shade-question',
+    //   clickEvent: Constants.Events.TOGGLE_SHADE_QUESTION,
+    //   addClassOn: [
+    //     {
+    //       eventID: Constants.Events.SHOW_SHADE_QUESTION,
+    //       cssClass: 'on'
+    //     }
+    //   ],
+    //   removeClassOn: [
+    //     {
+    //       eventID: Constants.Events.HIDE_SHADE_QUESTION,
+    //       cssClass: 'on'
+    //     },
+    //     {
+    //       eventID: Constants.Events.START_OVER_DONE,
+    //       cssClass: 'on'
+    //     }
+    //   ]
+    // },
+    // {
+    //   selector: '#shade-hand-left',
+    //   clickEvent: Constants.Events.TOGGLE_SHADE_HAND_LEFT,
+    //   addClassOn: [
+    //     {
+    //       eventID: Constants.Events.SHOW_SHADE_HAND_LEFT,
+    //       cssClass: 'on'
+    //     }
+    //   ],
+    //   removeClassOn: [
+    //     {
+    //       eventID: Constants.Events.HIDE_SHADE_HAND_LEFT,
+    //       cssClass: 'on'
+    //     },
+    //     {
+    //       eventID: Constants.Events.START_OVER_DONE,
+    //       cssClass: 'on'
+    //     }
+    //   ]
+    // },
+    // {
+    //   selector: '#shade-hand-right',
+    //   clickEvent: Constants.Events.TOGGLE_SHADE_HAND_RIGHT,
+    //   addClassOn: [
+    //     {
+    //       eventID: Constants.Events.SHOW_SHADE_HAND_RIGHT,
+    //       cssClass: 'on'
+    //     }
+    //   ],
+    //   removeClassOn: [
+    //     {
+    //       eventID: Constants.Events.HIDE_SHADE_HAND_RIGHT,
+    //       cssClass: 'on'
+    //     },
+    //     {
+    //       eventID: Constants.Events.START_OVER_DONE,
+    //       cssClass: 'on'
+    //     }
+    //   ]
+    // },
+    // {
+    //   selector: '#shade-pocket',
+    //   clickEvent: Constants.Events.TOGGLE_SHADE_POCKET,
+    //   addClassOn: [
+    //     {
+    //       eventID: Constants.Events.SHOW_SHADE_POCKET,
+    //       cssClass: 'on'
+    //     }
+    //   ],
+    //   removeClassOn: [
+    //     {
+    //       eventID: Constants.Events.HIDE_SHADE_POCKET,
+    //       cssClass: 'on'
+    //     },
+    //     {
+    //       eventID: Constants.Events.START_OVER_DONE,
+    //       cssClass: 'on'
+    //     }
+    //   ]
+    // },
+    // {
+    //   selector: '#shade-bank',
+    //   clickEvent: Constants.Events.TOGGLE_SHADE_BANK,
+    //   addClassOn: [
+    //     {
+    //       eventID: Constants.Events.SHOW_SHADE_BANK,
+    //       cssClass: 'on'
+    //     }
+    //   ],
+    //   removeClassOn: [
+    //     {
+    //       eventID: Constants.Events.HIDE_SHADE_BANK,
+    //       cssClass: 'on'
+    //     },
+    //     {
+    //       eventID: Constants.Events.START_OVER_DONE,
+    //       cssClass: 'on'
+    //     }
+    //   ]
+    // },
     {
       selector: '#rotate',
       clickEvent: Constants.Events.TRIGGER_SELECTION_ROTATE,
@@ -243,12 +243,12 @@ define(function (require) {
       disableEvent: Constants.Events.DISABLE_SELECTION_DUPLICATE,
       enableEvent: Constants.Events.ENABLE_SELECTION_DUPLICATE
     },
-    {
-      selector: '#flip',
-      clickEvent: Constants.Events.SELECTION_FLIP,
-      disableEvent: Constants.Events.DISABLE_SELECTION_FLIP,
-      enableEvent: Constants.Events.ENABLE_SELECTION_FLIP
-    },
+    // {
+    //   selector: '#flip',
+    //   clickEvent: Constants.Events.SELECTION_FLIP,
+    //   disableEvent: Constants.Events.DISABLE_SELECTION_FLIP,
+    //   enableEvent: Constants.Events.ENABLE_SELECTION_FLIP
+    // },
     {
       selector: '#text',
       clickEvent: Constants.Events.NEW_TEXT,
@@ -1114,7 +1114,7 @@ define(function (require) {
   function getDesiredClickSpawnPoint(newEntity, type) {
     var targetPt;
     var fallbackPt = {
-      x: MLC.Stage.canvas.width / 2 - tray.width,
+      x: MLC.Stage.canvas.width / 2 - (tray ? tray.width : 0),
       y: MLC.Stage.canvas.height / 4
     };
     if (type === TextEntity) {
@@ -1529,7 +1529,7 @@ define(function (require) {
       return entity instanceof TextEntity;
     });
     var selectedCurrency = _.filter(selectedEntities, function (entity) {
-      return entity instanceof MoneyPiece;
+      // return entity instanceof MoneyPiece;
     });
     if (!selectedCurrency.length) {
       MLC.Dispatcher.dispatchEvent(Constants.Events.DISABLE_EXHANGE_POPUP);
