@@ -1,0 +1,20 @@
+{
+  "name": "number-pieces-mini",
+  "private": true,
+  "dependencies": {
+    "modernizr": "~2.8.1",
+    "mlc-framework": "git@git.clarity-innovations.com:math-learning-center/mlc-framework.git#~2.1.0",
+    "requirejs": "^2.1.8",
+    "PreloadJS": "^0.6.2",
+    "TweenJS": "^0.6.2",
+    "EaselJS": "^0.8.2",
+    "underscore": "^1.8.3",
+    "spin.js": "^2.3.2",
+    "jquery": "~1.10.2",
+    "jquery-ui": "^1.12.1"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2"
+  }
+}

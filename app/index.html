@@ -1,0 +1,243 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>Number Pieces by The Math Learning Center</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="shortcut icon" href="favicon.ico">
+
+        <!-- build:css styles/vendor.css -->
+        <!-- bower:css -->
+        <!-- endbower -->
+        <!-- endbuild -->
+        <!-- build:css(.tmp) styles/compiled/main.css -->
+        <link rel="stylesheet" href="styles/compiled/main.css">
+        <!-- endbuild -->
+    </head>
+    <body>
+    <!-- Build version: @@version -->
+
+      <div id="templates">
+
+      </div>
+
+
+
+      <!-- <div id="toolbar-shade"></div> -->
+      <main>
+        <div id="loading-spinner"></div>
+        <canvas id="canvas"></canvas>
+        <menu type="toolbar" id="toolbar" class="">
+          <div class="toolbar_spacer"></div>
+
+
+          <div class="button-group single">
+            <button id="restart" class="toolbar-button" title="Restart"></button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="button-group single popout-group">
+            <button id="exchange" class="toolbar-button wide" title="Exchange"></button>
+            <div id="exchange-container" class="modal-dialog">
+
+              <div id="exchange-popout" class="popout hidden">
+                <div class="top header" title="Exchange Currency">
+                  <div class="title">Exchange For:</div>
+                  <div class="last close-button">Cancel</div>
+                </div>
+                <div class="content">
+                  <ul>
+                    <li id="exchangePennies" class="exchange-value" data-value="penny" title="Pennies">
+                      <img src="images/currency/currency-front-penny@2x.png" alt="Pennies" />
+                      <span>Pennies</span>
+                      <span class="coin-value">1¢</span>
+                    </li>
+                    <li id="exchangeNickels" class="exchange-value" data-value="nickel" title="Nickels">
+                      <img src="images/currency/currency-front-nickel@2x.png" alt="Pennies" />
+                      <span>Nickels</span>
+                      <span class="coin-value">5¢</span>
+                    </li>
+                    <li id="exchangeDimes" class="exchange-value last" data-value="dime" title="Dimes">
+                      <img src="images/currency/currency-front-dime@2x.png" alt="Pennies" />
+                      <span>Dimes</span>
+                      <span class="coin-value">10¢</span>
+                    </li>
+                    <li id="exchangeQuarters" class="exchange-value" data-value="quarter" title="Quarters">
+                      <img src="images/currency/currency-front-quarter@2x.png" alt="Pennies" />
+                      <span>Quarters</span>
+                      <span class="coin-value">25¢</span>
+                    </li>
+                    <li id="exchangeHalfDollars" class="exchange-value" data-value="halfdollar" title="Half Dollars">
+                      <img src="images/currency/currency-front-half-dollar@2x.png" alt="Pennies" />
+                      <span>Half Dollars</span>
+                      <span class="coin-value">50¢</span>
+                    </li>
+                    <li id="exchangeDollars" class="exchange-value last" data-value="dollar" title="Dollars">
+                      <img src="images/currency/currency-front-dollar@2x.png" alt="Pennies" />
+                      <span>Dollars</span>
+                      <span class="coin-value">100¢</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="bottom footer">
+                  <div class="list-end"></div>
+                  <div class="arrow"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div id="shade-buttons" class="button-group">
+            <button id="shade-question" class="toolbar-button narrow" title="Shade"></button>
+            <button id="shade-hand-right" class="toolbar-button narrow" title="Shade"></button>
+            <button id="shade-hand-left" class="toolbar-button narrow" title="Shade"></button>
+            <button id="shade-pocket" class="toolbar-button narrow" title="Shade"></button>
+            <button id="shade-bank" class="toolbar-button narrow" title="Shade"></button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="button-group">
+            <button id="duplicate" class="toolbar-button" title="Duplicate"></button>
+            <button id="flip" class="toolbar-button" title="Flip"></button>
+            <button id="rotate" class="toolbar-button" title="Rotate"></button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="button-group">
+            <button id="text" class="toolbar-button" title="Text"></button>
+            <button id="draw" class="toolbar-button" title="Drawing Tools"></button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="button-group single">
+            <button id="trash" class="toolbar-button" title="Trash"></button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="button-group single">
+            <button id="info" class="toolbar-button" title="Info"></button>
+          </div>
+
+          <div class="toolbar_spacer"></div>
+        </menu>
+
+        <div class="dialog-modal-template" title="Message" hidden>
+          <p></p>
+        </div>
+
+        <!-- Info page -->
+        <div id= "infopage" class="infopage">
+         <div class="infowrapper">
+           <div class="titlebar">
+             <ul class='sectionwrapper'>
+               <li class="title howto selected">How To</li><li class="title about">About</li>
+             </ul>
+             <div class="close">Done</div>
+           </div>
+           <div class="contents-wrapper">
+             <!--  Start How To contents -->
+             <div class="contents howto">
+                <div class="box">
+                  <p class="infohead howto">How To Use Money Pieces</p>
+                  <div class="info-subhead">Working with Pieces</div>
+                  <div class="info_illus">
+                    <img src="images/infoscreen/howto-01.png" style="margin-right:0;margin-top:0">
+                  </div>
+                  <div class="info-subhead">Working with Shades</div>
+                  <div class="info-subhead-description">Shades with illustrations can be used to pose problems with unknown quantities of money</div>
+                  <div class="info_illus">
+
+                    <img src="images/infoscreen/howto-02.png" style="margin-right:0;margin-top:0">
+                  </div>
+
+                  <div class="info-subhead">More Toolbar Items</div>
+                  <div class="info_illus">
+                    <img src="images/infoscreen/howto-03.png" style="margin-right:0;margin-top:0">
+                  </div>
+                </div>
+
+              </div> <!-- End How To contents -->
+
+              <!--  Start About contents -->
+              <div class="contents about">
+
+                 <div class="box">
+                  <p class="infohead">Overview</p>
+                  <p class="infobody"><strong>Money Pieces</strong> help students visualize and understand money values and relationships. Two versions of coins and bills are provided: currency pieces that replicate the appearance and relative size of U.S. coins and the dollar bill, and area money pieces.</p>
+                  <p class="infobody">Area money pieces represent the values of coins and the dollar bill using an area model in which 1 square unit is equal to a penny. Nickels, dimes, quarters, and half-dollars are represented by collections of squares equal to their value. In this way, the area pieces can be used to model and compute with fractions and decimals.</p>
+                </div>
+
+                <div class="box">
+                  <p class="infohead">More Apps</p>
+                  <p class="infobody">For more Money Pieces resources, iPad version, and other apps, visit:
+                    <br>
+                    <a class="about-link" target="_blank" href="http://www.mathlearningcenter.org/apps" style="margin:10px">www.mathlearningcenter.org/apps</a>
+                    </p>
+                </div>
+
+                <div class="box">
+                  <p class="infohead">Curriculum</p>
+                  <p class="infobody">To learn about Bridges in Mathematics, an elementary curriculum that employs visual models such as money pieces, please visit:
+                    <br>
+                    <a class="about-link" target="_blank" href="http://www.mathlearningcenter.org/bridges/overview" style="margin:10px">
+                      www.mathlearningcenter.org/bridges/overview</a>
+                    </p>
+                </div>
+
+                <div class="box">
+                  <p class="infohead">About Us</p>
+                  <p class="infobody">This app is brought to you by The Math Learning Center, a nonprofit organization dedicated to K-12 math education since 1976. Visit us at: <a class="about-link" target="_blank" href="http://www.mathlearningcenter.org">www.mathlearningcenter.org</a>
+                  </p>
+                  <a class="about-link" target="_blank" href="http://www.mathlearningcenter.org">
+                    <img style="display: block; margin-left: auto; margin-right: auto;" src="images/infoscreen/MLC_logo.png">
+                  </a>
+                </div>
+
+                <div class="box">
+                  <a class="about-link" target="_blank" href="http://www.clarity-innovations.com">
+                    <img style="display: block; margin-left: auto; margin-right: auto;" src="images/infoscreen/CI-logo.png">
+                  </a>
+                  <p class="infobody">This app was crafted by Clarity Innovations.
+                    We help improve teaching and learning by creating solutions that
+                    match promising technologies with the needs of education. Visit us at:
+                    <a class="about-link" target="_blank" href="http://www.clarity-innovations.com">www.clarity-innovations.com</a>
+                  </p>
+                </div>
+                <p class="infoversion">© @@year Math Learning Center &nbsp; | &nbsp;Money Value Pieces version @@version</p>
+              </div> <!-- End About contents -->
+            </div> <!-- End contents wrapper -->
+          </div> <!-- End info wrapper -->
+        </div> <!-- End info page -->
+
+      </main>
+
+      <!-- Google Analytics -->
+      <script>
+        /* jshint ignore:start */
+        (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+          function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+        e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+        e.src='//www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+        ga('create', window.location.href.indexOf('www.mathlearningcenter.org') > -1 ? 'UA-10884420-3' : 'UA-37674876-1');ga('send','pageview');
+        /* jshint ignore:end */
+      </script>
+
+        <!-- build:js(app) scripts/main.js -->
+        <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
+        <!-- endbuild -->
+</body>
+</html>

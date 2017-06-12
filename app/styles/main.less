@@ -1,0 +1,171 @@
+@import '../bower_components/mlc-framework/less/constants';
+@import '../bower_components/mlc-framework/less/core';
+
+@import '../bower_components/mlc-framework/less/infopage';
+
+@tbimg: '../../images/toolbar';
+
+@dmimg: '../../images/drawingmenu';
+@dmimgIE: 'images/drawingmenu';
+
+
+#exchange-popout.popout {
+  @header: 46px;
+  @footer: 36px;
+  @content: 336px;
+  height: calc(@header + @footer + @content);
+  & .content ul {
+    height: @content;
+  }
+}
+
+#canvas.erase-cursor {
+  cursor: url('@{dmimg}/eraser-transparent.cur'),
+          url('@{dmimgIE}/eraser-transparent.cur'),
+          crosshair !important; /* !important gets around bugginess with EaselJS cursor setting and IE */
+}
+
+#toolbar .button-group.popout-group {
+  position: relative;
+}
+
+#toolbar #exchange-container {
+  left: 50%;
+}
+
+#toolbar #exchange-popout ul li {
+  .flex;
+}
+
+#toolbar #exchange-popout ul li.hidden {
+  display: none;
+}
+
+#toolbar #exchange-popout ul li img {
+  position: static;
+  flex: 0 0 30px;
+  height: 30px;
+}
+
+#toolbar #exchange-popout ul li span.coin-value {
+  text-align: center;
+  width: 30px;
+}
+
+#toolbar #exchange-popout #exchangeDollars img {
+  height: 14px;
+}
+
+#toolbar-shade {
+  display: none;
+  cursor: pointer;
+  position: fixed;
+  height: 49px;
+  width: 100%;
+  bottom: 0px;
+  background-color: rgba(128, 128, 128, 0.3);
+}
+#toolbar-shade.show {
+  display: block;
+}
+
+#loading-spinner {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+}
+
+/* -----
+Toolbar Buttons
+----- */
+
+#restart {
+  background-image: url('@{tbimg}/icon-reload.png');
+}
+
+#shade-buttons {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+#shade-question {
+  background-image: url('@{tbimg}/icon-shade-question.png');
+}
+#shade-question.on {
+  background-image: url('@{tbimg}/icon-shade-question-on.png');
+}
+
+#shade-hand-left {
+  background-image: url('@{tbimg}/icon-shade-hand-left.png');
+}
+#shade-hand-left.on {
+  background-image: url('@{tbimg}/icon-shade-hand-left-on.png');
+}
+
+#shade-hand-right {
+  background-image: url('@{tbimg}/icon-shade-hand-right.png');
+}
+#shade-hand-right.on {
+  background-image: url('@{tbimg}/icon-shade-hand-right-on.png');
+}
+
+#shade-pocket {
+  background-image: url('@{tbimg}/icon-shade-pocket.png');
+}
+#shade-pocket.on {
+  background-image: url('@{tbimg}/icon-shade-pocket-on.png');
+}
+
+#shade-bank {
+  background-image: url('@{tbimg}/icon-shade-bank.png');
+}
+#shade-bank.on {
+  background-image: url('@{tbimg}/icon-shade-bank-on.png');
+}
+
+#exchange {
+  background-image: url('@{tbimg}/icon-exchange.png');
+}
+
+#rotate {
+  background-image: url('@{tbimg}/icon-rotate.png');
+}
+#rotate.down {
+  // background-image: url('@{tbimg}/icon-rotate-down.png');
+  opacity: .5;
+}
+
+#flip {
+  background-image: url('@{tbimg}/icon-flip.png');
+}
+
+#duplicate {
+  background-image: url('@{tbimg}/icon-duplicate.png');
+}
+
+#text {
+  background-image: url('@{tbimg}/icon-keypad.png');
+}
+#text.on {
+  background-image: url('@{tbimg}/icon-keypad-on.png');
+}
+
+#draw {
+  background-image: url('@{tbimg}/icon-drawing.png');
+}
+#draw.on {
+  background-image: url('@{tbimg}/icon-drawing-on.png');
+}
+
+#trash {
+  background-image: url('@{tbimg}/icon-trash.png');
+}
+
+#info {
+  background-image: url('@{tbimg}/icon-info.png');
+}
+
+.toolbar_spacer {
+  display: flex;
+  flex-grow: 1;
+}
