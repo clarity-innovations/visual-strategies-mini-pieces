@@ -589,7 +589,7 @@ define(function (require) {
         targetText.draw();
       }
     });
-    
+
     MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_BACKSPACE, function() {
       if (targetText) {
         targetText.updateText(targetText.text.slice(0, targetText.text.length-1));
@@ -649,15 +649,14 @@ define(function (require) {
 
     MLC.Dispatcher.on(MLC.Constants.SPAWN_FROM_TRAY_EVENT, spawnCounterFromTray);
 
-    MLC.Dispatcher.on(Constants.Events.REQUEST_START_OVER, _startOverPrompt);
+
+    MLC.Dispatcher.on(MLC.Constants.START_OVER_PROMPT_EVENT, _startOverPrompt);
+
 
     MLC.Dispatcher.on(Constants.Events.REQUEST_SELECTION_DUPLICATE, duplicate);
 
-    MLC.Dispatcher.on(Constants.Events.REQUEST_SELECTION_FLIP, function() {
-      _flipSelection();
-    });
 
-    MLC.Dispatcher.on(Constants.Events.REQUEST_SELECTION_DELETE, _deleteSelectionPrompt);
+    MLC.Dispatcher.on(MLC.Constants.DELETE_SELECTION_PROMPT_EVENT, _deleteSelectionPrompt);
     MLC.Dispatcher.on(Constants.Events.REQUEST_INFO, function() {
       infoPage.show();
     });
