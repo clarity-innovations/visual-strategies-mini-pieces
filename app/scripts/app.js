@@ -7,7 +7,7 @@ define(function (require) {
   var Spinjs = require('spinjs');
   var MLC = require('mlc-mix');
   var Constants = require('Constants');
-  // var MoneyPiece = require('MoneyPiece');
+  var NumberPiece = require('NumberPiece');
   // var PieceOptions = require('PieceOptions');
   // var MVPTray = require('MVPTray');
   // var MVPShade = require('MVPShade');
@@ -78,40 +78,50 @@ define(function (require) {
     {src: 'images/tray-background/tray.png'},
     {src: 'images/tray-background/tray@2x.png'},
 
-    {src: 'images/toggle/toggle-money-off.png'},
-    {src: 'images/toggle/toggle-money-on.png'},
-    {src: 'images/toggle/toggle-pieces-off.png'},
-    {src: 'images/toggle/toggle-pieces-on.png'},
+    // {src: 'images/toggle/toggle-money-off.png'},
+    // {src: 'images/toggle/toggle-money-on.png'},
+    // {src: 'images/toggle/toggle-pieces-off.png'},
+    // {src: 'images/toggle/toggle-pieces-on.png'},
 
-    { src: 'images/tray-buttons/button-grid-dollar.png'},
-    { src: 'images/tray-buttons/button-grid-dollar-down.png'},
-    { src: 'images/tray-buttons/button-currency-dollar.png'},
-    { src: 'images/tray-buttons/button-currency-dollar-down.png'},
+    // { src: 'images/tray-buttons/button-grid-dollar.png'},
+    // { src: 'images/tray-buttons/button-grid-dollar-down.png'},
+    // { src: 'images/tray-buttons/button-currency-dollar.png'},
+    // { src: 'images/tray-buttons/button-currency-dollar-down.png'},
 
-    { src: 'images/tray-buttons/button-grid-halfdollar.png'},
-    { src: 'images/tray-buttons/button-grid-halfdollar-down.png'},
-    { src: 'images/tray-buttons/button-currency-halfdollar.png'},
-    { src: 'images/tray-buttons/button-currency-halfdollar-down.png'},
+    // { src: 'images/tray-buttons/button-grid-halfdollar.png'},
+    // { src: 'images/tray-buttons/button-grid-halfdollar-down.png'},
+    // { src: 'images/tray-buttons/button-currency-halfdollar.png'},
+    // { src: 'images/tray-buttons/button-currency-halfdollar-down.png'},
 
-    { src: 'images/tray-buttons/button-grid-quarter.png'},
-    { src: 'images/tray-buttons/button-grid-quarter-down.png'},
-    { src: 'images/tray-buttons/button-currency-quarter.png'},
-    { src: 'images/tray-buttons/button-currency-quarter-down.png'},
+    // { src: 'images/tray-buttons/button-grid-quarter.png'},
+    // { src: 'images/tray-buttons/button-grid-quarter-down.png'},
+    // { src: 'images/tray-buttons/button-currency-quarter.png'},
+    // { src: 'images/tray-buttons/button-currency-quarter-down.png'},
 
-    { src: 'images/tray-buttons/button-grid-dime.png'},
-    { src: 'images/tray-buttons/button-grid-dime-down.png'},
-    { src: 'images/tray-buttons/button-currency-dime.png'},
-    { src: 'images/tray-buttons/button-currency-dime-down.png'},
+    // { src: 'images/tray-buttons/button-grid-dime.png'},
+    // { src: 'images/tray-buttons/button-grid-dime-down.png'},
+    // { src: 'images/tray-buttons/button-currency-dime.png'},
+    // { src: 'images/tray-buttons/button-currency-dime-down.png'},
 
-    { src: 'images/tray-buttons/button-grid-nickel.png'},
-    { src: 'images/tray-buttons/button-grid-nickel-down.png'},
-    { src: 'images/tray-buttons/button-currency-nickel.png'},
-    { src: 'images/tray-buttons/button-currency-nickel-down.png'},
+    // { src: 'images/tray-buttons/button-grid-nickel.png'},
+    // { src: 'images/tray-buttons/button-grid-nickel-down.png'},
+    // { src: 'images/tray-buttons/button-currency-nickel.png'},
+    // { src: 'images/tray-buttons/button-currency-nickel-down.png'},
 
-    { src: 'images/tray-buttons/button-grid-penny.png'},
-    { src: 'images/tray-buttons/button-grid-penny-down.png'},
-    { src: 'images/tray-buttons/button-currency-penny.png'},
-    { src: 'images/tray-buttons/button-currency-penny-down.png'}
+    // { src: 'images/tray-buttons/button-grid-penny.png'},
+    // { src: 'images/tray-buttons/button-grid-penny-down.png'},
+    // { src: 'images/tray-buttons/button-currency-penny.png'},
+    // { src: 'images/tray-buttons/button-currency-penny-down.png'}
+
+    {src: 'images/basicTray/button-hundreds-down@2x.png'},
+    {src: 'images/basicTray/button-hundreds@2x.png'},
+    {src: 'images/basicTray/button-ones-down@2x.png'},
+    {src: 'images/basicTray/button-ones@2x.png'},
+    {src: 'images/basicTray/button-tens-horiz-down@2x.png'},
+    {src: 'images/basicTray/button-tens-horiz@2x.png'},
+    {src: 'images/basicTray/button-tens-vert-down@2x.png'},
+    {src: 'images/basicTray/button-tens-vert@2x.png'},
+
   ];
 
   var TOOLBAR_BUTTONS = [
@@ -469,14 +479,14 @@ define(function (require) {
         }
     });
 
-    // buildTray();
+    buildTray();
     // buildShades();
 
     // _.each(shades, function(shade) {
     //   page.addToWorkspace(shade, MLC.Page.LayerNames.WIDGET);
     // });
 
-    // MLC.Dispatcher.dispatchEvent(MLC.Constants.TRAY_EXPAND_EVENT);
+    MLC.Dispatcher.dispatchEvent(MLC.Constants.TRAY_EXPAND_EVENT);
   }
 
   function buildToolbar() {
@@ -494,7 +504,12 @@ define(function (require) {
 
   function buildTray(){
     var counters = buildTrayItemOptions();
-    tray = new MVPTray(MLC.Stage,
+    // tray = new MVPTray(MLC.Stage,
+    //   {
+    //     counters: counters
+    //   }
+    // );
+    tray = new MLC.Tray(MLC.Stage,
       {
         counters: counters
       }
@@ -540,51 +555,63 @@ define(function (require) {
   }
 
   function buildTrayItemManifest(){
-    // var manifest = [];
-    // var path = 'images/tray-buttons/';
-    // var prefix = 'button-';
-    // var type = ['grid', 'currency'];
-    // var currency = ['penny', 'nickel', 'dime', 'quarter', 'half-dollar', 'dollar'];
-    // var side = ['', '-down'];
-    // var size = ['', '@2x'];
-    // var ext = '.png';
-    //
-    // for(var t = 0; t < type.length; t++){
-    //   for(var c = 0; c < currency.length; c++){
-    //     for(var s = 0; s < side.length; s++){
-    //       for(var se = 0; se < size.length; se++){
-    //         var id = prefix + type[t] + '-' + currency[c] + side[s] + size[se] + ext;
-    //         manifest.push({id: id, src: path + id});
-    //       }
-    //     }
-    //   }
-    // }
-    //
-    // console.log('manifest', manifest);
-    // return manifest;
+    var manifest = [];
+    var path = 'images/tray-buttons/';
+    var prefix = 'button-';
+    var type = ['grid', 'currency'];
+    var currency = ['penny', 'nickel', 'dime', 'quarter', 'half-dollar', 'dollar'];
+    var side = ['', '-down'];
+    var size = ['', '@2x'];
+    var ext = '.png';
+    
+    for(var t = 0; t < type.length; t++){
+      for(var c = 0; c < currency.length; c++){
+        for(var s = 0; s < side.length; s++){
+          for(var se = 0; se < size.length; se++){
+            var id = prefix + type[t] + '-' + currency[c] + side[s] + size[se] + ext;
+            manifest.push({id: id, src: path + id});
+          }
+        }
+      }
+    }
+    
+    console.log('manifest', manifest);
+    return manifest;
   }
 
   function buildTrayItemOptions() {
     var items = [];
-    var currency = ['dollar', 'halfdollar', 'quarter', 'dime', 'nickel', 'penny'];
+    var pieceNames = [ 'hundreds', 'ones', 'tens-horiz', 'tens-vert'];
+    var prefix = 'images/basicTray/button-';
+    var suffix = '@2x.png';
 
-    var vPrefix = 'images/tray-buttons/button-grid-';
-    var cPrefix = 'images/tray-buttons/button-currency-';
-
-    for(var i = 0; i < currency.length; i++){
-      var mp = {
-        valueImage:{
-          up: vPrefix + currency[i] +'.png',
-          down: vPrefix + currency[i] +'-down.png'
-        },
-        currencyImage: {
-          up: cPrefix + currency[i] +'.png',
-          down: cPrefix + currency[i] +'-down.png'
-        },
-        pieceOptions: PieceOptions(currency[i])
+    var item;
+    for (var index = 0; index < pieceNames.length; index++) {
+      item = {
+        image: prefix + pieceNames[index] + suffix
       };
-      items.push(mp);
+      items.push(item);
     }
+
+    // var currency = ['dollar', 'halfdollar', 'quarter', 'dime', 'nickel', 'penny'];
+
+    // var vPrefix = 'images/tray-buttons/button-grid-';
+    // var cPrefix = 'images/tray-buttons/button-currency-';
+
+    // for(var i = 0; i < currency.length; i++){
+    //   var mp = {
+    //     valueImage:{
+    //       up: vPrefix + currency[i] +'.png',
+    //       down: vPrefix + currency[i] +'-down.png'
+    //     },
+    //     currencyImage: {
+    //       up: cPrefix + currency[i] +'.png',
+    //       down: cPrefix + currency[i] +'-down.png'
+    //     },
+    //     pieceOptions: PieceOptions(currency[i])
+    //   };
+    //   items.push(mp);
+    // }
 
     return items;
   }
@@ -729,7 +756,7 @@ define(function (require) {
       });
       MLC.Dispatcher.dispatchEvent(rotateEvent);
     });
-    MLC.Dispatcher.on(Constants.Events.SPAWN_MONEY_PIECE, spawnMoneyPiece);
+    MLC.Dispatcher.on(MLC.Constants.SPAWN_FROM_TRAY_EVENT, spawnCounterFromTray);
 
     MLC.Dispatcher.on(Constants.Events.REQUEST_START_OVER, _startOverPrompt);
     MLC.Dispatcher.on(Constants.Events.TOGGLE_SHADE_QUESTION, function() {
@@ -1056,14 +1083,18 @@ define(function (require) {
   }
 
 
-  function spawnMoneyPiece(event){
-    var options = event.pieceOptions;
-    options.mode = event.mode;
+  function spawnCounterFromTray(event) {
 
-    if(page.selectableEntities.length >= Constants.MONEYPIECELIMIT){
+    if (page.selectableEntities.length >= Constants.MONEYPIECELIMIT) {
+
       MLC.Dispatcher.dispatchEvent(new createjs.Event(Constants.Events.SPAWN_PIECE_FAILURE));
+
     } else {
-      var piece = new MoneyPiece(null, options);
+
+      // Determine piece size based on image?
+      var options = event;
+
+      var piece = new NumberPiece(null, options);
       var position = _getDesiredPointFromTraySpawn(event, piece);
       piece.x = position.x;
       piece.y = position.y;
@@ -1081,24 +1112,24 @@ define(function (require) {
         snapSelection();
       }
 
-
-    var constrainEntityEvent = new createjs.Event(MLC.Constants.CONSTRAIN_ENTITY_EVENT);
-    constrainEntityEvent.set({
-      skipAnimation: true,
-      selectionBounds: piece.getConstraintBounds()
-    });
-    piece.display.dispatchEvent(constrainEntityEvent);
-    // piece.display.dispatchEvent(MLC.Constants.CONSTRAIN_ENTITY_EVENT);
+      var constrainEntityEvent = new createjs.Event(MLC.Constants.CONSTRAIN_ENTITY_EVENT);
+      constrainEntityEvent.set({
+        skipAnimation: true,
+        selectionBounds: piece.getConstraintBounds()
+      });
+      piece.display.dispatchEvent(constrainEntityEvent);
 
       MLC.Dispatcher.dispatchEvent(new createjs.Event(MLC.Constants.STAGE_UPDATE));
+
     }
   }
 
   function _getDesiredPointFromTraySpawn(event, piece) {
     var desiredPosition;
     var localPoint;
+    var piece = piece || { width: 0, height: 0 };
 
-    if (event.spawnAtCenter) {
+    if (event.spawnAtCenter && piece) {
       desiredPosition = getDesiredClickSpawnPoint(piece);
     } else {
       localPoint = page.workspace.globalToLocal(event.stageX, event.stageY);

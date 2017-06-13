@@ -80,13 +80,9 @@ define(function(){
       EXCHANGE_FAILURE: 'failedexchangingpieces'
     },
 
-    PieceTypes: {
-      PENNY: 'penny',
-      NICKEL: 'nickel',
-      DIME: 'dime',
-      QUARTER: 'quarter',
-      HALFDOLLAR: 'half-dollar',
-      DOLLAR: 'dollar'
+    UNIT_TYPE : {
+      bar: 'bar',
+      circle: 'circle'
     },
 
     Modes: {

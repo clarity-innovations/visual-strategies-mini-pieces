@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "modernizr": "~2.8.1",
-    "mlc-framework": "git@git.clarity-innovations.com:math-learning-center/mlc-framework.git#~2.1.0",
+    "mlc-framework": "git@git.clarity-innovations.com:math-learning-center/mlc-framework.git#~2.2",
     "requirejs": "^2.1.8",
     "PreloadJS": "^0.6.2",
     "TweenJS": "^0.6.2",
