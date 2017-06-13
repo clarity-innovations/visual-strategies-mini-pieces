@@ -122,6 +122,7 @@ define(function (require) {
     {src: 'images/basicTray/button-tens-vert-down@2x.png'},
     {src: 'images/basicTray/button-tens-vert@2x.png'},
 
+    {src: 'images/counter/unit.png'},
   ];
 
   var TOOLBAR_BUTTONS = [
@@ -129,106 +130,6 @@ define(function (require) {
       selector: '#restart',
       clickEvent: Constants.Events.REQUEST_START_OVER,
     },
-    // {
-    //   selector: '#shade-question',
-    //   clickEvent: Constants.Events.TOGGLE_SHADE_QUESTION,
-    //   addClassOn: [
-    //     {
-    //       eventID: Constants.Events.SHOW_SHADE_QUESTION,
-    //       cssClass: 'on'
-    //     }
-    //   ],
-    //   removeClassOn: [
-    //     {
-    //       eventID: Constants.Events.HIDE_SHADE_QUESTION,
-    //       cssClass: 'on'
-    //     },
-    //     {
-    //       eventID: Constants.Events.START_OVER_DONE,
-    //       cssClass: 'on'
-    //     }
-    //   ]
-    // },
-    // {
-    //   selector: '#shade-hand-left',
-    //   clickEvent: Constants.Events.TOGGLE_SHADE_HAND_LEFT,
-    //   addClassOn: [
-    //     {
-    //       eventID: Constants.Events.SHOW_SHADE_HAND_LEFT,
-    //       cssClass: 'on'
-    //     }
-    //   ],
-    //   removeClassOn: [
-    //     {
-    //       eventID: Constants.Events.HIDE_SHADE_HAND_LEFT,
-    //       cssClass: 'on'
-    //     },
-    //     {
-    //       eventID: Constants.Events.START_OVER_DONE,
-    //       cssClass: 'on'
-    //     }
-    //   ]
-    // },
-    // {
-    //   selector: '#shade-hand-right',
-    //   clickEvent: Constants.Events.TOGGLE_SHADE_HAND_RIGHT,
-    //   addClassOn: [
-    //     {
-    //       eventID: Constants.Events.SHOW_SHADE_HAND_RIGHT,
-    //       cssClass: 'on'
-    //     }
-    //   ],
-    //   removeClassOn: [
-    //     {
-    //       eventID: Constants.Events.HIDE_SHADE_HAND_RIGHT,
-    //       cssClass: 'on'
-    //     },
-    //     {
-    //       eventID: Constants.Events.START_OVER_DONE,
-    //       cssClass: 'on'
-    //     }
-    //   ]
-    // },
-    // {
-    //   selector: '#shade-pocket',
-    //   clickEvent: Constants.Events.TOGGLE_SHADE_POCKET,
-    //   addClassOn: [
-    //     {
-    //       eventID: Constants.Events.SHOW_SHADE_POCKET,
-    //       cssClass: 'on'
-    //     }
-    //   ],
-    //   removeClassOn: [
-    //     {
-    //       eventID: Constants.Events.HIDE_SHADE_POCKET,
-    //       cssClass: 'on'
-    //     },
-    //     {
-    //       eventID: Constants.Events.START_OVER_DONE,
-    //       cssClass: 'on'
-    //     }
-    //   ]
-    // },
-    // {
-    //   selector: '#shade-bank',
-    //   clickEvent: Constants.Events.TOGGLE_SHADE_BANK,
-    //   addClassOn: [
-    //     {
-    //       eventID: Constants.Events.SHOW_SHADE_BANK,
-    //       cssClass: 'on'
-    //     }
-    //   ],
-    //   removeClassOn: [
-    //     {
-    //       eventID: Constants.Events.HIDE_SHADE_BANK,
-    //       cssClass: 'on'
-    //     },
-    //     {
-    //       eventID: Constants.Events.START_OVER_DONE,
-    //       cssClass: 'on'
-    //     }
-    //   ]
-    // },
     {
       selector: '#rotate',
       clickEvent: Constants.Events.TRIGGER_SELECTION_ROTATE,
@@ -253,12 +154,6 @@ define(function (require) {
       disableEvent: Constants.Events.DISABLE_SELECTION_DUPLICATE,
       enableEvent: Constants.Events.ENABLE_SELECTION_DUPLICATE
     },
-    // {
-    //   selector: '#flip',
-    //   clickEvent: Constants.Events.SELECTION_FLIP,
-    //   disableEvent: Constants.Events.DISABLE_SELECTION_FLIP,
-    //   enableEvent: Constants.Events.ENABLE_SELECTION_FLIP
-    // },
     {
       selector: '#text',
       clickEvent: Constants.Events.NEW_TEXT,
@@ -293,15 +188,7 @@ define(function (require) {
     },
   ];
 
-  var TOOLBAR_POPOUTS = [
-    // {
-    //   selector: '#exchange-popout',
-    //   showEvent: Constants.Events.EXCHANGE_POPUP_SHOW,
-    //   hideEvent: Constants.Events.EXCHANGE_POPUP_HIDE,
-    //   parent: '#exchange-container',
-    //   events: addExchangeEvents
-    // }
-  ];
+  var TOOLBAR_POPOUTS = [];
 
   // Initialization
   $(document).ready(function () {
@@ -480,7 +367,6 @@ define(function (require) {
     });
 
     buildTray();
-    // buildShades();
 
     // _.each(shades, function(shade) {
     //   page.addToWorkspace(shade, MLC.Page.LayerNames.WIDGET);
@@ -516,44 +402,6 @@ define(function (require) {
     );
   }
 
-  function buildShades() {
-    var defaultDimensions = {
-      width: 250,
-      height: 200
-    };
-    var position = {
-      x: SHADE_INITIAL_PADDING,
-      y: SHADE_INITIAL_PADDING
-    };
-
-    var display = page.display;
-
-    var shadeURLs = {
-      questionMark: 'images/shades/question-transparent.png',
-      rightHand: 'images/shades/shade-image-hand-right@2x.png',
-      leftHand: 'images/shades/shade-image-hand-left@2x.png',
-      pocket: 'images/shades/shade-image-pocket@2x.png',
-      bank: 'images/shades/shade-image-bank@2x.png'
-    };
-
-    _.each(shadeURLs, function (url, key) {
-      shades[key] = _buildShade(display, defaultDimensions, position, url);
-      position.x += SHADE_INITIAL_OFFSET;
-      position.y += SHADE_INITIAL_OFFSET;
-    });
-  }
-
-  function _buildShade(display, dimensions, position, imageURL) {
-    return new MVPShade(
-      display,
-      {
-        dimensions: dimensions,
-        position: position,
-        centerImage: MLC.Loader.getResult('ui', imageURL)
-      }
-    );
-  }
-
   function buildTrayItemManifest(){
     var manifest = [];
     var path = 'images/tray-buttons/';
@@ -581,9 +429,10 @@ define(function (require) {
 
   function buildTrayItemOptions() {
     var items = [];
-    var pieceNames = [ 'hundreds', 'ones', 'tens-horiz', 'tens-vert'];
-    var prefix = 'images/basicTray/button-';
-    var suffix = '@2x.png';
+    // var pieceNames = [ 'hundreds', 'ones', 'tens-horiz', 'tens-vert'];
+    var pieceNames = [ 'unit' ];
+    var prefix = 'images/counter/';
+    var suffix = '.png';
 
     var item;
     for (var index = 0; index < pieceNames.length; index++) {
@@ -592,26 +441,6 @@ define(function (require) {
       };
       items.push(item);
     }
-
-    // var currency = ['dollar', 'halfdollar', 'quarter', 'dime', 'nickel', 'penny'];
-
-    // var vPrefix = 'images/tray-buttons/button-grid-';
-    // var cPrefix = 'images/tray-buttons/button-currency-';
-
-    // for(var i = 0; i < currency.length; i++){
-    //   var mp = {
-    //     valueImage:{
-    //       up: vPrefix + currency[i] +'.png',
-    //       down: vPrefix + currency[i] +'-down.png'
-    //     },
-    //     currencyImage: {
-    //       up: cPrefix + currency[i] +'.png',
-    //       down: cPrefix + currency[i] +'-down.png'
-    //     },
-    //     pieceOptions: PieceOptions(currency[i])
-    //   };
-    //   items.push(mp);
-    // }
 
     return items;
   }
@@ -1093,7 +922,10 @@ define(function (require) {
 
       // Determine piece size based on image?
       var options = event;
-
+      options.dimensions = {
+        width: 30,
+        height: 30
+      };
       var piece = new NumberPiece(null, options);
       var position = _getDesiredPointFromTraySpawn(event, piece);
       piece.x = position.x;

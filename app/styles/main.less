@@ -19,6 +19,12 @@
   }
 }
 
+#canvas.draw-cursor {
+  cursor: url('@{dmimg}/cursor-pen.cur'),
+          url('@{dmimgIE}/cursor-pen.cur'),
+          crosshair !important; /* !important gets around bugginess with EaselJS cursor setting and IE */
+}
+
 #canvas.erase-cursor {
   cursor: url('@{dmimg}/eraser-transparent.cur'),
           url('@{dmimgIE}/eraser-transparent.cur'),

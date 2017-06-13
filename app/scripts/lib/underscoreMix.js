@@ -89,12 +89,42 @@ define(['underscore', 'createjs'], function (_, createjs) {
      *                height: int
      *              }
      */
-    scaleImage: function(image, dimensions) {
-      if (!_.isUndefined(image) && !_.isUndefined(dimensions)) {
-        var imageBounds = image.getBounds();
-        imageBounds = imageBounds || dimensions;
-        image.scaleX = dimensions.width / imageBounds.width;
-        image.scaleY = dimensions.height / imageBounds.height;
+    scaleImage: function(image, dimensions, maintainRatio) {
+      var imageExists = image && _.isFunction(image.getBounds);
+      var dimensionsExist = dimensions && _.isNumber(dimensions.width) && _.isNumber(dimensions.height);
+      var shouldScale = imageExists && dimensionsExist;
+      var hasBounds = false;
+
+      if (!imageExists) {
+        _.log('Underscore-Mix', 'scaleImage', 'Image has no function \'getBounds\'');
+      } 
+      if (!dimensionsExist) {
+        _.log('Underscore-Mix', 'scaleImage', 'Dimension has no width or height.');
+      }
+
+      if (shouldScale) {
+        var bounds = image.getBounds();
+        var scaleX = image.scaleX;
+        var scaleY = image.scaleY;
+        hasBounds = !!bounds;
+        if (hasBounds) {
+         if (maintainRatio) {
+            var scaleWidth = dimensions.width / bounds.width;
+            var scaleHeight = dimensions.height / bounds.height;
+            scaleX = scaleY = Math.min(scaleWidth, scaleHeight);
+          } else {
+            scaleX = dimensions.width / bounds.width;
+            scaleY = dimensions.height / bounds.height;
+          }
+        }
+        if (!_.isUndefined(image) && !_.isUndefined(dimensions)) {
+          image.scaleX = scaleX;
+          image.scaleY = scaleY;
+        }
+      }
+
+      if (!shouldScale || !hasBounds) {
+        _.log('Underscore-Mix', 'scaleImage', 'Failed to scale image.');  
       }
     },
 

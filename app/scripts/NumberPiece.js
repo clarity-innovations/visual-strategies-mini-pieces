@@ -34,9 +34,8 @@ define(function(require) {
   var SELECTED_BORDER_COLOR = MLC.Constants.COLOR_PRIMARY_LIGHT;
   var DEBUG_COLORS = ['rgba(192,64,64,.6)','rgba(64,192,64,.6)','rgba(64,64,192,.6)'];
 
-  var DEFAULT_BAR_HEIGHT = 50;
-  var DEFAULT_BAR_WIDTH = 200;
-  var MINIMUM_BAR_WIDTH = 100;
+  var DEFAULT_PIECE_HEIGHT = 20;
+  var DEFAULT_PIECE_WIDTH = 20;
   var DEFAULT_CIRCLE_RADIUS = 60;
   var MINIMUM_CIRCLE_RADIUS = 30;
 
@@ -79,247 +78,76 @@ define(function(require) {
   function NumberPiece(parent, options) {
     options = options || {};
 
+    // options.movable = {
+    //   selectable: true,
+    //   mousedown: function(event) {
+    //     if (this.isColoring) {
+    //     } else {
+    //       MLC.Interfaces.defaultSelectable.mousedown.call(this, event);
+    //     }
+    //   },
+    //   pressmove: function(event) {
+    //     if (this.isColoring) {
+    //       this.colorFragments(event);
+    //     } else {
+    //       var firstParent = MLC.CanvasEntity.getFirstParentEntity(event.target);
+    //       var isHandle = firstParent instanceof MLC.Handle;
+    //       var isButton = firstParent instanceof MLC.Button;
+    //       if (!isHandle && !isButton) {
+    //         MLC.Interfaces.defaultSelectable.pressmove.call(this, event);
+    //       }
+    //     }
+    //   },
+    //   pressup: function(event) {
+    //     if (this.isColoring) {
+    //       if (this.colorUpdated) {
+    //         this.colorUpdated = false;
+    //       }
+    //     } else {
+    //       var firstParent = MLC.CanvasEntity.getFirstParentEntity(event.target);
+    //       var isHandle = firstParent instanceof MLC.Handle;
+    //       var isButton = firstParent instanceof MLC.Button;
+    //       if (!isHandle && !isButton) {
+    //         MLC.Interfaces.defaultSelectable.pressup.call(this, event);
+    //       }
+    //     }
+    //   },
+    //   moveentity: true
+    // };
+
     options.movable = {
       selectable: true,
-      mousedown: function(event) {
-        if (this.isColoring) {
-        } else {
-          MLC.Interfaces.defaultSelectable.mousedown.call(this, event);
-        }
-      },
-      pressmove: function(event) {
-        if (this.isColoring) {
-          this.colorFragments(event);
-        } else {
-          var firstParent = MLC.CanvasEntity.getFirstParentEntity(event.target);
-          var isHandle = firstParent instanceof MLC.Handle;
-          var isButton = firstParent instanceof MLC.Button;
-          if (!isHandle && !isButton) {
-            MLC.Interfaces.defaultSelectable.pressmove.call(this, event);
-          }
-        }
-      },
-      pressup: function(event) {
-        if (this.isColoring) {
-          if (this.colorUpdated) {
-            this.colorUpdated = false;
-          }
-        } else {
-          var firstParent = MLC.CanvasEntity.getFirstParentEntity(event.target);
-          var isHandle = firstParent instanceof MLC.Handle;
-          var isButton = firstParent instanceof MLC.Button;
-          if (!isHandle && !isButton) {
-            MLC.Interfaces.defaultSelectable.pressup.call(this, event);
-          }
-        }
-      },
-      moveentity: true
-    };
-
-    options.focusable = {
       mousedown: true,
       pressmove: true,
       pressup: true
-    };
-    options.focusable[MLC.Constants.FOCUS_EVENT] = function(event) {
-      if (this.isColoring) {
-      } else {
-        MLC.Interfaces.defaultFocusable[MLC.Constants.FOCUS_EVENT].call(this, event);
-      }
-    };
+    }
+
+    options.focusable = true;
 
     MLC.SelectableEntity.call(this, parent, options);
 
     MLC.Interfaces.addInterfaces(this, this.display, { constrained: true });
 
     this.borderColor = options.borderColor || DEFAULT_BORDER_COLOR;
-
     this.back = new createjs.Shape();
-    this.fragmentContainer = new createjs.Container();
-    this.fragments = [];
-    this.unitType = options.unitType || UNIT_TYPE.bar;
-    this.angle = options.angle || 0;
-    this.orientation = options.orientation || 0; //0, 2 horizontal, 1, 3 vertical
-
-
-    this.isColoring = false;
-    this.color = options.color || null;
-    this.labelsOn = options.labelsOn || false;
 
     this.setupDisplay();
-    this.updateFragments(options.fragmentCount);
-    this._updateLabelText();
     this.bindDispatcherEvents();
-
-    // Create Handles and add them to the MVPShade.
-    this.handles = this._createHandles(parent);
-    _.each(this.handles, function (handle) {
-      this.display.addChild(handle.object.display);
-    }, this);
-
-    this.resizeAmounts = {
-      left: 0,
-      right: 0
-    };
-
-    // Update colored state based on initializing fragments
-    if (options.fragments) {
-      var index, length = options.fragments.length;
-      for (index = 0; index < length; index++) {
-        this.fragments[index].colored = options.fragments[index].colored;
-      }
-      this._updateLabelText();
-      this._updateLabelDraw();
-      this.draw();
-      this.fragmentContainer.cache(0, 0, this.width, this.height);
-    } else {
-      this.draw();
-    }
   }
 
   NumberPiece.prototype.bindDispatcherEvents = function() {
-    MLC.Dispatcher.on(Constants.Events.FRACTION_FILL_ENABLE_COLORING, function () {
-      this.isColoring = true;
-      this.draw();
-      MLC.Dispatcher.dispatchEvent(MLC.Constants.STAGE_UPDATE);
-    }, this);
-    MLC.Dispatcher.on(Constants.Events.FRACTION_FILL_DISABLE_COLORING, function () {
-      this.isColoring = false;
-      this.draw();
-      MLC.Dispatcher.dispatchEvent(MLC.Constants.STAGE_UPDATE);
-    }, this);
-
-    MLC.Dispatcher.on(Constants.Events.FRACTION_SET_COLOR, function (event) {
-      this.colorNumberPiece(event);
-    }, this);
-
-    MLC.Dispatcher.on(Constants.Events.LABELS_SHOW, function () {
-      this.labelsOn = true;
-      this.labelContainer.visible = this.labelsOn;
-      this.draw();
-      MLC.Dispatcher.dispatchEvent(MLC.Constants.STAGE_UPDATE);
-    }, this);
-    MLC.Dispatcher.on(Constants.Events.LABELS_HIDE, function () {
-      this.labelsOn = false;
-      this.labelContainer.visible = this.labelsOn;
-      this.draw();
-      MLC.Dispatcher.dispatchEvent(MLC.Constants.STAGE_UPDATE);
-    }, this);
-
     MLC.Dispatcher.on(Constants.Events.PIECE_ROTATE, this.rotate, this);
-  };
-
-  NumberPiece.prototype.updateFragments = function(numFragments) {
-    if (_.isUndefined(numFragments)) {
-      numFragments = this.fragments.length;
-    }
-    if (_.isNumber(numFragments)) {
-      numFragments = (numFragments < 1 ? 1 : numFragments);
-    }
-    this.fragments = [];
-    this.fragmentContainer.removeAllChildren();
-    var i, frag;
-    switch (this.unitType) {
-      case UNIT_TYPE.bar:
-        for (i = 0; i < numFragments; i++) {
-          frag = new Fragment(this.fragmentContainer, {
-            fragmentType: FRAGMENT_TYPE.bar,
-            range: {
-              start: (i/numFragments) * this.dimensions.width,
-              stop: ((i + 1)/numFragments) * this.dimensions.width
-            },
-            dimensions: {
-              width: this.width || DEFAULT_BAR_WIDTH,
-              height: this.height || DEFAULT_BAR_HEIGHT
-            },
-            colored: false,
-            color: debug ? DEBUG_COLORS[i%DEBUG_COLORS.length] : this.color
-          });
-          this.fragments.push(frag);
-          frag.draw();
-        }
-        break;
-      case UNIT_TYPE.circle:
-        var radianOffset = 90 * MLC.Constants.DEGREES_TO_RADIANS;
-        for (i = 0; i < numFragments; i++) {
-          frag = new Fragment(this.fragmentContainer, {
-            fragmentType: FRAGMENT_TYPE.arc,
-            range: {
-              start: (i/numFragments) * CIRCLE_IN_RADIANS - radianOffset,
-              stop: ((i + 1)/numFragments) * CIRCLE_IN_RADIANS - radianOffset
-            },
-            dimensions: {
-              width: this.width || DEFAULT_CIRCLE_RADIUS,
-              height: this.height || DEFAULT_CIRCLE_RADIUS
-            },
-            colored: false,
-            color: debug ? DEBUG_COLORS[i%DEBUG_COLORS.length] : this.color
-          });
-          this.fragments.push(frag);
-          frag.draw();
-        }
-        break;
-    }
-    this.draw();
-    this._updateLabelText();
-    this.fragmentContainer.cache(0, 0, this.width, this.height);
-    MLC.Dispatcher.dispatchEvent(new createjs.Event(MLC.Constants.STAGE_UPDATE));
-  };
-
-  NumberPiece.prototype.setColor = function (colorToSet) {
-    if (this.color !== colorToSet) {
-      this.colorUpdated = true;
-    }
-    this.color = colorToSet;
-    this.recolorFragments();
-  };
-
-  NumberPiece.prototype.recolorFragments = function() {
-    _.each(this.fragments, function (fragment) {
-      fragment.color = this.color;
-    }, this);
-    this.draw();
-    this.fragmentContainer.cache(0, 0, this.width, this.height);
-    MLC.Dispatcher.dispatchEvent(new createjs.Event(MLC.Constants.STAGE_UPDATE));
-  };
-
-  NumberPiece.prototype.resizeFragments = function() {
-    var numFragments = this.fragments.length;
-    switch (this.unitType) {
-      case UNIT_TYPE.bar:
-        _.each(this.fragments, function (fragment, index) {
-          fragment.range.start = (index/numFragments) * this.dimensions.width;
-          fragment.range.stop = ((index + 1)/numFragments) * this.dimensions.width;
-          fragment.width = this.width;
-          fragment.height = this.height;
-        }, this);
-        break;
-      case UNIT_TYPE.circle:
-      var radianOffset = 90 * MLC.Constants.DEGREES_TO_RADIANS;
-        _.each(this.fragments, function (fragment, index) {
-          fragment.range.start = (index/numFragments) * CIRCLE_IN_RADIANS - radianOffset;
-          fragment.range.stop = ((index + 1)/numFragments) * CIRCLE_IN_RADIANS - radianOffset;
-          fragment.width = this.width;
-          fragment.height = this.height;
-        }, this);
-        break;
-    }
-    this.draw();
-    this.fragmentContainer.cache(0, 0, this.width, this.height);
-    MLC.Dispatcher.dispatchEvent(new createjs.Event(MLC.Constants.STAGE_UPDATE));
   };
 
 
   NumberPiece.prototype.setupDisplay = function() {
-    this.labelContainer = this._createLabel();
-    this.display.addChild(this.labelContainer, this.back, this.fragmentContainer);
-    this._registerAt([ this.fragmentContainer, this.back ], this.width / 2, this.height / 2);
+    this.display.addChild(this.back);
+    this._registerAt([ this.back ], this.width / 2, this.height / 2);
   };
 
 
   NumberPiece.prototype._registerAt = function(children, x, y) {
     _.each(children, function(child) {
-      //console.log('child',child);
       child.regX = x;
       child.regY = y;
       child.x = x;
@@ -655,128 +483,6 @@ define(function(require) {
     // handle.display.hitArea = hitShape;
   };
 
-  NumberPiece.prototype._createLabel = function () {
-    this.labelContainer = new createjs.Container();
-    this.labelContainer.visible = this.labelsOn;
-    this.labelShape = new createjs.Shape();
-    this.labelText = new MLC.MathText(null, {
-      rawText: '0',
-      fontSize: '30px',
-      vinculumSpacing: LABEL_FRACTION_SPACING
-    });
-    this.labelShape.alpha = 0.9;
-    this.labelOutlineColor = "rgb(183, 199, 208)"
-    this.labelContainer.addChild(this.labelShape, this.labelText.display);
-    this._updateLabelPosition();
-    this._updateLabelDraw();
-    return this.labelContainer;
-  };
-
-  NumberPiece.prototype._updateLabelText = function () {
-    var numerator = _.where(this.fragments, { 'colored': true }).length;
-    var denominator = this.fragments.length;
-
-    var newText;
-    if (denominator === 1) {
-      newText = '' + numerator;
-    } else {
-      newText = numerator + '/' + denominator;
-    }
-    this.labelText.updateText(newText);
-    this._updateLabelPosition();
-  };
-
-  NumberPiece.prototype._updateLabelPosition = function () {
-    if (this.orientation === 1 || this.orientation === 3) {
-      this.labelContainer.x = this.width / 2 - Constants.LABEL_RADIUS;
-      this.labelContainer.y = this.height + (this.width - this.height) / 2;
-      this.labelText.x = Constants.LABEL_RADIUS - (this.labelText.width / 2);
-      // Text y is the center-line of the text, so place it halfway down the diameter of the label
-      this.labelText.y = Constants.LABEL_RADIUS - 1;
-    } else {
-      this.labelContainer.x = -Constants.LABEL_RADIUS * 2;
-      this.labelContainer.y = this.height / 2 - Constants.LABEL_RADIUS;
-      this.labelText.x = Constants.LABEL_RADIUS - (this.labelText.width / 2);
-      // Text y is the center-line of the text, so place it halfway down the diameter of the label
-      this.labelText.y = Constants.LABEL_RADIUS - 1;
-    }
-  };
-
-  NumberPiece.prototype._updateLabelDraw = function () {
-    this.labelShape.graphics
-      .clear()
-      .beginFill(MLC.Constants.COLOR_PRIMARY_PALE)
-      .beginStroke(this.labelOutlineColor);
-
-    if (this.unitType === UNIT_TYPE.bar) {
-      var rectX, rectY, rectW, rectH, radS, radE;
-      var p1, p2, p3, p4;
-      switch (this.orientation) {
-        case 0:
-        case 2:
-          rectX = Constants.LABEL_RADIUS;
-          rectY = 0;
-          rectW = Constants.LABEL_RADIUS;
-          rectH = Constants.LABEL_RADIUS * 2;
-          radS = Math.PI/2;
-          radE = Math.PI*3/2;
-          p1 = { x: rectX, y: rectY + rectH };
-          p2 = { x: rectX + rectW, y: rectY + rectH };
-          p3 = { x: rectX + rectW , y: rectY };
-          p4 = { x: rectX, y: rectY };
-          break;
-        case 1:
-        case 3:
-          rectX = 0;
-          rectY = 0;
-          rectW = Constants.LABEL_RADIUS * 2;
-          rectH = Constants.LABEL_RADIUS;
-          radS = Math.PI*2;
-          radE = Math.PI;
-          p1 = { x: rectX, y: rectY + rectH };
-          p2 = { x: rectX, y: rectY };
-          p3 = { x: rectX + rectW , y: rectY };
-          p4 = { x: rectX + rectW, y: rectY + rectH };
-          break;
-      }
-      this.labelShape.graphics
-        .arc(Constants.LABEL_RADIUS, Constants.LABEL_RADIUS, Constants.LABEL_RADIUS, radS, radE)
-        .moveTo(p1.x, p1.y)
-        .lineTo(p2.x, p2.y)
-        .lineTo(p3.x, p3.y)
-        .lineTo(p4.x, p4.y);
-    }
-    else if (this.unitType === UNIT_TYPE.circle) {
-      var intersection;
-      var point1, point2;
-
-      var circle = this.display.localToGlobal(this.width / 2, this.height / 2);
-      var circleXY = this.display.localToGlobal(0, 0);
-      circle.radius = ((circle.x - circleXY.x) + (circle.x - circleXY.x)) / 2; // Average radius
-
-      point1 = this.labelContainer.localToGlobal(0, 0);
-      point2 = this.labelContainer.localToGlobal(Constants.LABEL_RADIUS, 0);
-      intersection = _getIntersection(point1, point2, circle);
-      var upperPoint = intersection.negative;
-
-      point1 = this.labelContainer.localToGlobal(0, Constants.LABEL_RADIUS * 2);
-      point2 = this.labelContainer.localToGlobal(Constants.LABEL_RADIUS, Constants.LABEL_RADIUS * 2);
-      intersection = _getIntersection(point1, point2, circle);
-
-      var lowerPoint = intersection.negative;
-
-      var localPointUpper = this.labelShape.globalToLocal(upperPoint.x, upperPoint.y);
-      var localPointLower = this.labelShape.globalToLocal(lowerPoint.x, lowerPoint.y);
-
-      var relativeLargeCenter = this.display.localToLocal(this.width / 2, this.height / 2, this.labelContainer);
-      var startAngle = Math.atan((localPointLower.x - relativeLargeCenter.x) / (localPointLower.y - relativeLargeCenter.y)) + Math.PI * 3/2;
-      var endAngle = Math.atan((localPointUpper.x - relativeLargeCenter.x) / (localPointUpper.y - relativeLargeCenter.y)) + Math.PI * 5/2;
-      this.labelShape.graphics
-        .arc(Constants.LABEL_RADIUS, Constants.LABEL_RADIUS, Constants.LABEL_RADIUS, Math.PI/2, Math.PI*3/2)
-        .arc(relativeLargeCenter.x, relativeLargeCenter.y, this.width / 2, startAngle, endAngle, true)
-        .closePath();
-    }
-  };
 
   function _getIntersection(point1, point2, circle) {
     // Get intersection:
@@ -944,84 +650,6 @@ define(function(require) {
   };
 
 
-  NumberPiece.prototype.colorNumberPiece = function(event) {
-    if (event.fraction !== this) {
-      // This is not the fraction we're looking for
-      return;
-    }
-    this.setColor(event.newColor);
-    var fragmentUnderClick = _.find(this.fragments, function(fragment) {
-      return _.contains(fragment.display.children, event.originalEvent.target);
-    });
-    if (fragmentUnderClick && this.isColoring) {
-      var initialColorState = fragmentUnderClick.colored;
-      this.ongoingSetColor = !initialColorState;
-      if (this.colorUpdated) {
-        this.ongoingSetColor = true;
-      }
-      fragmentUnderClick.setColor(this.ongoingSetColor);
-      this._updateLabelText();
-    }
-    this.fragmentContainer.cache(0, 0, this.width, this.height);
-    this.draw();
-  };
-
-
-  NumberPiece.prototype.colorFragments = function(event) {
-    var fragmentsAlongLine = this.getFragmentsAlongLine(this.interactionState.previousPosition, this.interactionState.currentPosition);
-    _.each(fragmentsAlongLine, function(fragment) {
-      fragment.setColor(this.ongoingSetColor);
-    }, this);
-    this._updateLabelText();
-    this.fragmentContainer.cache(0, 0, this.width, this.height);
-  };
-
-  NumberPiece.prototype.getFragmentsAlongLine = function(point1, point2) {
-    return _.filter(this.fragments, function(fragment) {
-      return this.lineIntersectsFragment(point1, point2, fragment);
-    }, this);
-  };
-
-  NumberPiece.prototype.lineIntersectsFragment = function(point1, point2, fragment) {
-    var intersects = false;
-    var lines = this.getFragmentLines(fragment);
-    intersects = _.any(lines, function (line) {
-      return this.lineIntersectsLine(point1, point2, line.a, line.b);
-    }, this);
-    return intersects;
-  };
-
-  NumberPiece.prototype.getFragmentLines = function(fragment) {
-    var lines = [];
-    switch (this.unitType) {
-      case Constants.UNIT_TYPE.bar:
-          var corners = [
-            fragment.display.localToGlobal(fragment.x + fragment.range.start, fragment.y),
-            fragment.display.localToGlobal(fragment.x + fragment.range.stop, fragment.y),
-            fragment.display.localToGlobal(fragment.x + fragment.range.stop, fragment.y + fragment.height),
-            fragment.display.localToGlobal(fragment.x + fragment.range.start, fragment.y + fragment.height)
-          ];
-          lines = [
-            { a: corners[0], b: corners[1] },
-            { a: corners[1], b: corners[2] },
-            { a: corners[2], b: corners[3] },
-            { a: corners[3], b: corners[0] }
-          ];
-        break;
-      case Constants.UNIT_TYPE.circle:
-        var center = fragment.display.localToGlobal(fragment.x + fragment.width / 2, fragment.y + fragment.height / 2);
-        var startCorner = fragment.display.localToGlobal(fragment.width/2 * Math.cos(fragment.range.start) + fragment.width/2, fragment.height/2 * Math.sin(fragment.range.start) + fragment.height/2);
-        var stopCorner = fragment.display.localToGlobal(fragment.width/2 * Math.cos(fragment.range.stop) + fragment.width/2, fragment.height/2 * Math.sin(fragment.range.stop) + fragment.height/2);
-        lines = [
-          { a: center, b: startCorner },
-          { a: center, b: stopCorner }
-        ];
-        break;
-    }
-
-    return lines;
-  };
-
   NumberPiece.prototype.lineIntersectsLine = function(point1, point2, pointA, pointB) {
     var intersects = false;
     var denominator = ((point2.x - point1.x) * (pointB.y - pointA.y)) - ((point2.y - point1.y) * (pointB.x - pointA.x));
@@ -1039,52 +667,20 @@ define(function(require) {
 
   NumberPiece.prototype.draw = function() {
     this.back.graphics.clear();
-    if (this.selected && !this.isColoring) {
+    if (this.selected) {
       this.back.graphics.setStrokeStyle(BORDER_OUTER * 2).beginStroke(SELECTED_BORDER_COLOR);
     } else {
       this.back.graphics.setStrokeStyle(BORDER_OUTER).beginStroke(this.borderColor);
     }
+    this.back.graphics.beginFill('#FBE33B');
+    this.back.graphics.drawRect(0, 0, this.dimensions.width, this.dimensions.height);
 
-    switch (this.unitType) {
-      case UNIT_TYPE.bar:
-        this.back.graphics.drawRect(0, 0, this.dimensions.width, this.dimensions.height);
-        break;
-      case UNIT_TYPE.circle:
-        this.back.graphics.drawEllipse(0, 0, this.dimensions.width, this.dimensions.height);
-        break;
-      default:
-        MLC.SelectableEntity.draw.call(this);
-    }
-    _.each(this.handles, function (handle) {
-      if (_.isUndefined(handle.side)) {
-        handle.object.display.rotation = this.angle;
-      }
-      handle.object.draw();
-    }, this);
-
-    if (this.unitType !== UNIT_TYPE.bar) {
-      this.fragmentContainer.rotation = this.angle;
-      this.back.rotation = this.angle;
-    }
-
-
-    if (this.unitType === UNIT_TYPE.bar) {
-      this._updateLabelPosition();
-      this._updateLabelDraw();
-      this.fragmentContainer.rotation = this.angle;
-      this.back.rotation = this.angle;
-
-      _.each(this.handles, function (handle) {
-        if(!_.isUndefined(handle.side)){
-          // handle.object.display.rotation = this.angle;
-        }
-        handle.object.draw();
-      }, this);
-    }
-
-    _.each(this.fragments, function (fragment) {
-      fragment.draw();
-    }, this);
+    // _.each(this.handles, function (handle) {
+    //   if (_.isUndefined(handle.side)) {
+    //     handle.object.display.rotation = this.angle;
+    //   }
+    //   handle.object.draw();
+    // }, this);
   };
 
 
