@@ -583,10 +583,38 @@ define(function (require) {
 
     MLC.Dispatcher.on(MLC.Constants.SPAWN_TEXT_EVENT, spawnTextEntity, this);
 
-    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_SHOW, function(event) {
+    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_WRITE, function(event) {
+      if (targetText) {
+        targetText.updateText(targetText.text + event.text);
+        targetText.draw();
+      }
+    });
+    
+    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_BACKSPACE, function() {
+      if (targetText) {
+        targetText.updateText(targetText.text.slice(0, targetText.text.length-1));
+        targetText.draw();
+      }
+    });
 
+    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_COLOR_CHANGE, function(event) {
+      if (targetText) {
+        targetText.updateColor(event.text);
+      }
+    });
+
+    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_HIDE, function() {
+      $('#toolbar-shade').removeClass('show');
+      targetText = null;
+      page.endSpotlight(textSpotlightId);
+      textSpotlightId = null;
+    });
+
+    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_SHOW, function(event) {
+      $('#toolbar-shade').addClass('show');
       targetText = event.targetText;
 
+      positionTextTools();
       var constrainEvent = new createjs.Event(MLC.Constants.CONSTRAIN_ENTITY_EVENT);
       constrainEvent.set({
         skipAnimation: true
@@ -595,35 +623,9 @@ define(function (require) {
 
       if (_.isString(textSpotlightId)) {
         // Clear text spotlight first
-        pages[currentPage].endSpotlight(textSpotlightId);
+        page.endSpotlight(textSpotlightId);
       }
-      textSpotlightId = pages[currentPage].spotlight(targetText);
-
-    });
-
-    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_HIDE, function() {
-      targetText = null;
-      pages[currentPage].endSpotlight(textSpotlightId);
-      textSpotlightId = null;
-    });
-
-    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_WRITE, function(event) {
-      if (targetText) {
-        targetText.updateText(targetText.text + event.text);
-        targetText.draw();
-      }
-    });
-    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_BACKSPACE, function() {
-      if (targetText) {
-        targetText.updateText(targetText.text.slice(0, targetText.text.length-1));
-        targetText.draw();
-      }
-    });
-    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_COLOR_CHANGE, function(event) {
-      if (targetText) {
-        targetText.updateColor(event.text);
-        targetText.draw();
-      }
+      textSpotlightId = page.spotlight(targetText);
     });
 
     MLC.Dispatcher.on(MLC.Constants.SPAWN_TEXT_REQUEST_EVENT, function () {
