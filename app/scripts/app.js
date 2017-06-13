@@ -124,7 +124,7 @@ define(function (require) {
 
     {src: 'images/counter/unit.png'},
   ];
-
+/*
   var TOOLBAR_BUTTONS = [
     {
       selector: '#restart',
@@ -189,6 +189,7 @@ define(function (require) {
   ];
 
   var TOOLBAR_POPOUTS = [];
+*/
 
   // Initialization
   $(document).ready(function () {
@@ -377,12 +378,54 @@ define(function (require) {
 
   function buildToolbar() {
     toolbar = new MLC.Toolbar({
-      buttons: TOOLBAR_BUTTONS,
-      popouts: TOOLBAR_POPOUTS
+      parent: {
+        selector: Constants.TOOLBAR_SELECTOR,
+        clickEvent: Constants.TOOLBAR_CLICKED_EVENT
+      }
     });
 
-    updateSelection();
+    attachToolbarButtons(toolbar);
+    attachToolbarPopouts(toolbar);
   }
+
+  function attachToolbarButtons(toolbar) {
+    // Attach default buttons.
+    toolbar.addButton(Constants.DELETE_SELECTOR, MLC.Toolbar.defaultDeleteOptions);
+    toolbar.addButton(Constants.START_OVER_SELECTOR, MLC.Toolbar.defaultStartOverOptions);
+    toolbar.addButton(Constants.DRAW_TOOLS_SELECTOR, MLC.Toolbar.defaultDrawToolsOptions);
+    toolbar.addButton(Constants.TEXT_TOOLS_SELECTOR, MLC.Toolbar.defaultTextToolsOptions);
+
+    // Attach app-specific buttons.
+    // EG: Duplicate, Rotate
+
+    // toolbar.addButton(Constants.TRAY_TOGGLE_SELECTOR, {
+    //   clickEvent: Constants.TRAY_TOGGLE_EVENT,
+    //   addClassOn: [
+    //     {
+    //       eventID: Constants.TRAY_RETRACT_EVENT,
+    //       cssClass: 'tray-open'
+    //     }
+    //   ],
+    //   removeClassOn: [
+    //     {
+    //       eventID: Constants.TRAY_EXPAND_EVENT,
+    //       cssClass: 'tray-open'
+    //     }
+    //   ]
+    // });
+  }
+
+  function attachToolbarPopouts(toolbar) {
+  }
+
+  // function buildToolbar() {
+  //   toolbar = new MLC.Toolbar({
+  //     buttons: TOOLBAR_BUTTONS,
+  //     popouts: TOOLBAR_POPOUTS
+  //   });
+
+  //   updateSelection();
+  // }
 
   function buildInfo() {
     infoPage = new MLC.InfoPage('#infopage');
@@ -537,6 +580,33 @@ define(function (require) {
   }
 
   function bindDispatcherEvents() {
+
+    MLC.Dispatcher.on(MLC.Constants.SPAWN_TEXT_EVENT, spawnTextEntity, this);
+
+    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_SHOW, function(event) {
+
+      targetText = event.targetText;
+
+      var constrainEvent = new createjs.Event(MLC.Constants.CONSTRAIN_ENTITY_EVENT);
+      constrainEvent.set({
+        skipAnimation: true
+      });
+      textTools.display.dispatchEvent(constrainEvent);
+
+      if (_.isString(textSpotlightId)) {
+        // Clear text spotlight first
+        pages[currentPage].endSpotlight(textSpotlightId);
+      }
+      textSpotlightId = pages[currentPage].spotlight(targetText);
+
+    });
+
+    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_HIDE, function() {
+      targetText = null;
+      pages[currentPage].endSpotlight(textSpotlightId);
+      textSpotlightId = null;
+    });
+
     MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_WRITE, function(event) {
       if (targetText) {
         targetText.updateText(targetText.text + event.text);
@@ -552,31 +622,20 @@ define(function (require) {
     MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_COLOR_CHANGE, function(event) {
       if (targetText) {
         targetText.updateColor(event.text);
+        targetText.draw();
       }
     });
-    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_HIDE, function() {
-      $('#toolbar-shade').removeClass('show');
-      targetText = null;
-      page.endSpotlight(textSpotlightId);
-      textSpotlightId = null;
-    });
-    MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_SHOW, function(event) {
-      $('#toolbar-shade').addClass('show');
-      targetText = event.targetText;
 
-      positionTextTools();
-      var constrainEvent = new createjs.Event(MLC.Constants.CONSTRAIN_ENTITY_EVENT);
-      constrainEvent.set({
-        skipAnimation: true
-      });
-      textTools.display.dispatchEvent(constrainEvent);
-
-      if (_.isString(textSpotlightId)) {
-        // Clear text spotlight first
-        page.endSpotlight(textSpotlightId);
+    MLC.Dispatcher.on(MLC.Constants.SPAWN_TEXT_REQUEST_EVENT, function () {
+      if (textTools.display.visible) {
+        // REJECT!
+        MLC.Dispatcher.dispatchEvent(MLC.Constants.TEXT_TOOLS_HIDE);
+      } else {
+        MLC.Dispatcher.dispatchEvent(MLC.Constants.SPAWN_TEXT_EVENT);
       }
-      textSpotlightId = page.spotlight(targetText);
     });
+
+
     MLC.Dispatcher.on(Constants.Events.SELECTION_ROTATE, function(event) {
       var center = _getCenterOfSelection();
       var rotateEvent = new createjs.Event(Constants.Events.PIECE_ROTATE);
@@ -585,61 +644,17 @@ define(function (require) {
       });
       MLC.Dispatcher.dispatchEvent(rotateEvent);
     });
+
     MLC.Dispatcher.on(MLC.Constants.SPAWN_FROM_TRAY_EVENT, spawnCounterFromTray);
 
     MLC.Dispatcher.on(Constants.Events.REQUEST_START_OVER, _startOverPrompt);
-    MLC.Dispatcher.on(Constants.Events.TOGGLE_SHADE_QUESTION, function() {
-      _toggleShadeVisibility(
-        shades.questionMark,
-        Constants.Events.SHOW_SHADE_QUESTION,
-        Constants.Events.HIDE_SHADE_QUESTION
-      );
-    });
-    MLC.Dispatcher.on(Constants.Events.TOGGLE_SHADE_HAND_LEFT, function() {
-      _toggleShadeVisibility(
-        shades.leftHand,
-        Constants.Events.SHOW_SHADE_HAND_LEFT,
-        Constants.Events.HIDE_SHADE_HAND_LEFT
-      );
-    });
-    MLC.Dispatcher.on(Constants.Events.TOGGLE_SHADE_HAND_RIGHT, function() {
-      _toggleShadeVisibility(
-        shades.rightHand,
-        Constants.Events.SHOW_SHADE_HAND_RIGHT,
-        Constants.Events.HIDE_SHADE_HAND_RIGHT
-      );
-    });
-    MLC.Dispatcher.on(Constants.Events.TOGGLE_SHADE_POCKET, function() {
-      _toggleShadeVisibility(
-        shades.pocket,
-        Constants.Events.SHOW_SHADE_POCKET,
-        Constants.Events.HIDE_SHADE_POCKET
-      );
-    });
-    MLC.Dispatcher.on(Constants.Events.TOGGLE_SHADE_BANK, function() {
-      _toggleShadeVisibility(
-        shades.bank,
-        Constants.Events.SHOW_SHADE_BANK,
-        Constants.Events.HIDE_SHADE_BANK
-      );
-    });
-
-    // MLC.Dispatcher.on(Constants.Events.EXCHANGE_POPUP_TOGGLE, function(e) {
-    //   if ($('#exchange-container').hasClass('open')) {
-    //     MLC.Dispatcher.dispatchEvent(Constants.Events.EXCHANGE_POPUP_HIDE);
-    //   } else {
-    //     MLC.Dispatcher.dispatchEvent(Constants.Events.EXCHANGE_POPUP_SHOW);
-    //   }
-    // });
 
     MLC.Dispatcher.on(Constants.Events.REQUEST_SELECTION_DUPLICATE, duplicate);
+
     MLC.Dispatcher.on(Constants.Events.REQUEST_SELECTION_FLIP, function() {
       _flipSelection();
     });
-    MLC.Dispatcher.on(Constants.Events.NEW_TEXT, spawnTextEntity);
-    MLC.Dispatcher.on(Constants.Events.TOGGLE_DRAW_TOOLS, function() {
-      MLC.Dispatcher.dispatchEvent(MLC.Constants.DRAW_TOOLS_EVENT);
-    });
+
     MLC.Dispatcher.on(Constants.Events.REQUEST_SELECTION_DELETE, _deleteSelectionPrompt);
     MLC.Dispatcher.on(Constants.Events.REQUEST_INFO, function() {
       infoPage.show();

@@ -3,6 +3,13 @@ define(function(){
 
   var constants = {
 
+  	START_OVER_SELECTOR: '#restart',
+  	DUPLICATE_SELECTOR: '#duplicate',
+  	ROTATE_SELECTOR: '#rotate',
+  	TEXT_TOOLS_SELECTOR: '#text',
+  	DRAW_TOOLS_SELECTOR: '#draw',
+  	DELETE_SELECTOR: '#trash',
+
     Events: {
       TRIGGER_SELECTION_ROTATE: 'mvptriggerrotateselection',
       SELECTION_ROTATE: 'mvprotateselection',

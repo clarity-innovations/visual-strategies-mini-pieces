@@ -1,164 +1,125 @@
-// generated on 2017-06-12 using generator-webapp 3.0.1
-const gulp = require('gulp');
-const gulpLoadPlugins = require('gulp-load-plugins');
-const browserSync = require('browser-sync').create();
-const del = require('del');
-const wiredep = require('wiredep').stream;
-const runSequence = require('run-sequence');
+'use strict';
 
-const $ = gulpLoadPlugins();
-const reload = browserSync.reload;
+//npm install gulp gulp-minify-css gulp-uglify gulp-clean gulp-cleanhtml gulp-jshint gulp-strip-debug gulp-zip gulp-less gulp-replace --save-dev
 
-let dev = true;
+var gulp = require('gulp'),
+  clean = require('gulp-clean'),
+  cleanhtml = require('gulp-cleanhtml'),
+  minifycss = require('gulp-minify-css'),
+  jshint = require('gulp-jshint'),
+  stripdebug = require('gulp-strip-debug'),
+  uglify = require('gulp-uglify'),
+  zip = require('gulp-zip'),
+  path = require('path'),
+  less = require('gulp-less'),
+  replace = require('gulp-replace');
 
-gulp.task('styles', () => {
-  return gulp.src('app/styles/*.css')
-    .pipe($.if(dev, $.sourcemaps.init()))
-    .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
-    .pipe($.if(dev, $.sourcemaps.write()))
-    .pipe(gulp.dest('.tmp/styles'))
-    .pipe(reload({stream: true}));
+
+  var buildDir = "buildChrome";
+  var appDir = "app";
+  var distDir = "distChrome";
+
+  var fs = require('fs');
+  var json = JSON.parse(fs.readFileSync('./package.json'));
+
+//clean build directory
+gulp.task('clean', function() {
+  return gulp.src(buildDir + '/*', {read: false})
+    .pipe(clean());
 });
 
-gulp.task('scripts', () => {
-  return gulp.src('app/scripts/**/*.js')
-    .pipe($.plumber())
-    .pipe($.if(dev, $.sourcemaps.init()))
-    .pipe($.babel())
-    .pipe($.if(dev, $.sourcemaps.write('.')))
-    .pipe(gulp.dest('.tmp/scripts'))
-    .pipe(reload({stream: true}));
+//copy static folders to build directory
+gulp.task('copy', function() {
+  gulp.src(appDir + '/favicon.ico')
+    .pipe(gulp.dest(buildDir));
+  gulp.src(appDir + '/background.js')
+    .pipe(gulp.dest(buildDir));
+  return gulp.src(appDir + '/manifest.json')
+    .pipe(replace('@@version', json.version))
+    .pipe(gulp.dest(buildDir));
 });
 
-function lint(files) {
-  return gulp.src(files)
-    .pipe($.eslint({ fix: true }))
-    .pipe(reload({stream: true, once: true}))
-    .pipe($.eslint.format())
-    .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
-}
-
-gulp.task('lint', () => {
-  return lint('app/scripts/**/*.js')
-    .pipe(gulp.dest('app/scripts'));
-});
-gulp.task('lint:test', () => {
-  return lint('test/spec/**/*.js')
-    .pipe(gulp.dest('test/spec'));
+gulp.task('copyImg', function() {
+  return gulp.src(appDir + '/images/**')
+    .pipe(gulp.dest(buildDir + '/images'));
 });
 
-gulp.task('html', ['styles', 'scripts'], () => {
-  return gulp.src('app/*.html')
-    .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
-    .pipe($.if(/\.js$/, $.uglify({compress: {drop_console: true}})))
-    .pipe($.if(/\.css$/, $.cssnano({safe: true, autoprefixer: false})))
-    .pipe($.if(/\.html$/, $.htmlmin({
-      collapseWhitespace: true,
-      minifyCSS: true,
-      minifyJS: {compress: {drop_console: true}},
-      processConditionalComments: true,
-      removeComments: true,
-      removeEmptyAttributes: true,
-      removeScriptTypeAttributes: true,
-      removeStyleLinkTypeAttributes: true
-    })))
-    .pipe(gulp.dest('dist'));
+gulp.task('copyBower', function() {
+  return gulp.src('app/bower_components/**/*.js')
+    .pipe(gulp.dest(buildDir + '/bower_components'));
 });
 
-gulp.task('images', () => {
-  return gulp.src('app/images/**/*')
-    .pipe($.cache($.imagemin()))
-    .pipe(gulp.dest('dist/images'));
+gulp.task('getVersion', function(){
+  console.log("version", json.version);
 });
 
-gulp.task('fonts', () => {
-  return gulp.src(require('main-bower-files')('**/*.{eot,svg,ttf,woff,woff2}', function (err) {})
-    .concat('app/fonts/**/*'))
-    .pipe($.if(dev, gulp.dest('.tmp/fonts'), gulp.dest('dist/fonts')));
+//copy and compress HTML files
+gulp.task('html', function() {
+  return gulp.src(appDir + '/*.html')
+    .pipe(cleanhtml())
+    .pipe(replace('@@version', json.version))
+    .pipe(replace('@@year', new Date().getFullYear()))
+    .pipe(gulp.dest(buildDir));
 });
 
-gulp.task('extras', () => {
-  return gulp.src([
-    'app/*',
-    '!app/*.html'
-  ], {
-    dot: true
-  }).pipe(gulp.dest('dist'));
+//run scripts through JSHint
+gulp.task('jshint', function() {
+  return gulp.src(appDir + '/scripts/*.js')
+    .pipe(jshint())
+    // .pipe(jshint.reporter('default'));
 });
 
-gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
-
-gulp.task('serve', () => {
-  runSequence(['clean', 'wiredep'], ['styles', 'scripts', 'fonts'], () => {
-    browserSync.init({
-      notify: false,
-      port: 9000,
-      server: {
-        baseDir: ['.tmp', 'app'],
-        routes: {
-          '/bower_components': 'bower_components'
-        }
-      }
-    });
-
-    gulp.watch([
-      'app/*.html',
-      'app/images/**/*',
-      '.tmp/fonts/**/*'
-    ]).on('change', reload);
-
-    gulp.watch('app/styles/**/*.css', ['styles']);
-    gulp.watch('app/scripts/**/*.js', ['scripts']);
-    gulp.watch('app/fonts/**/*', ['fonts']);
-    gulp.watch('bower.json', ['wiredep', 'fonts']);
-  });
+//copy vendor scripts and uglify all other scripts, creating source maps
+gulp.task('scripts', ['jshint'], function() {
+  // gulp.src(appDir + '/scripts/lib/**/*.js')
+  //  .pipe(gulp.dest(buildDir + '/scripts/lib'));
+  return gulp.src([appDir + '/scripts/**/*.js'])
+    .pipe(stripdebug())
+    // .pipe(uglify({
+    //   outSourceMap: true,
+    //   mangle: false
+    // }))
+    .pipe(gulp.dest(buildDir + '/scripts'));
 });
 
-gulp.task('serve:dist', ['default'], () => {
-  browserSync.init({
-    notify: false,
-    port: 9000,
-    server: {
-      baseDir: ['dist']
-    }
-  });
-});
 
-gulp.task('serve:test', ['scripts'], () => {
-  browserSync.init({
-    notify: false,
-    port: 9000,
-    ui: false,
-    server: {
-      baseDir: 'test',
-      routes: {
-        '/scripts': '.tmp/scripts',
-        '/bower_components': 'bower_components'
-      }
-    }
-  });
-
-  gulp.watch('app/scripts/**/*.js', ['scripts']);
-  gulp.watch(['test/spec/**/*.js', 'test/index.html']).on('change', reload);
-  gulp.watch('test/spec/**/*.js', ['lint:test']);
-});
-
-// inject bower components
-gulp.task('wiredep', () => {
-  gulp.src('app/*.html')
-    .pipe(wiredep({
-      ignorePath: /^(\.\.\/)*\.\./
+gulp.task("less", function(){
+  return gulp.src(appDir + '/styles/**/*.less')
+    .pipe(less({
+      paths: [ appDir + '/styles' ]
     }))
-    .pipe(gulp.dest('app'));
+    .pipe(gulp.dest(buildDir + '/styles/compiled'));
 });
 
-gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
-  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
+//minify styles
+gulp.task('styles', function() {
+  return gulp.src(appDir + '/styles/**/*.css')
+    // .pipe(minifycss({root: 'src/styles', keepSpecialComments: 0}))
+    .pipe(gulp.dest(buildDir + '/styles'));
+  // return gulp.src('src/styles/**')
+    // .pipe(gulp.dest('build/styles'));
 });
 
-gulp.task('default', () => {
-  return new Promise(resolve => {
-    dev = false;
-    runSequence(['clean', 'wiredep'], 'build', resolve);
-  });
+//build ditributable and sourcemaps after other tasks completed
+gulp.task('zip', ['html', 'scripts', 'styles', 'copy', 'copyImg', 'copyBower'], function() {
+  var manifest = require('./' + appDir + '/manifest');
+
+  var namePrefix = manifest.short_name || manifest.name;
+
+  var distFileName = namePrefix + ' v' + json.version + '.zip',
+    mapFileName = namePrefix + ' v' + json.version + '-maps.zip';
+
+  //collect all source maps
+  // gulp.src('build/scripts/**/*.map')
+    // .pipe(zip(mapFileName))
+    // .pipe(gulp.dest('dist'));
+  //build distributable extension
+  return gulp.src([buildDir + '/**', '!' + buildDir + '/scripts/**/*.map'])
+    .pipe(zip(distFileName))
+    .pipe(gulp.dest(distDir));
+});
+
+//run all tasks after build directory has been cleaned
+gulp.task('default', ['clean'], function() {
+    gulp.start('zip');
 });
