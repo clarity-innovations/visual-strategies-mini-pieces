@@ -63,7 +63,7 @@ define(function(){
       DISABLE_SELECTION_FLIP: 'disableselectionflip',
       ENABLE_SELECTION_FLIP: 'enableselectionflip',
 
-      NEW_TEXT: 'requestnewtext',
+      SPAWN_TEXT_REQUEST: 'requestnewtext',
 
       TOGGLE_DRAW_TOOLS: 'toggledrawtools',
       SHOW_DRAW_TOOLS: 'showdrawtools',

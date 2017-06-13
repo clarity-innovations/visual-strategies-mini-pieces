@@ -393,7 +393,12 @@ define(function (require) {
     toolbar.addButton(Constants.DELETE_SELECTOR, MLC.Toolbar.defaultDeleteOptions);
     toolbar.addButton(Constants.START_OVER_SELECTOR, MLC.Toolbar.defaultStartOverOptions);
     toolbar.addButton(Constants.DRAW_TOOLS_SELECTOR, MLC.Toolbar.defaultDrawToolsOptions);
-    toolbar.addButton(Constants.TEXT_TOOLS_SELECTOR, MLC.Toolbar.defaultTextToolsOptions);
+
+    // Default behavior is to just spawn the text when clicked; we need to request the
+    // spawn first so that it can be prevented when text tools are already open.
+    var textToolsOptions = MLC.Toolbar.defaultTextToolsOptions;
+    textToolsOptions.clickEvent = Constants.Events.SPAWN_TEXT_REQUEST;
+    toolbar.addButton(Constants.TEXT_TOOLS_SELECTOR, textToolsOptions);
 
     // Attach app-specific buttons.
     // EG: Duplicate, Rotate
@@ -628,7 +633,7 @@ define(function (require) {
       textSpotlightId = page.spotlight(targetText);
     });
 
-    MLC.Dispatcher.on(MLC.Constants.SPAWN_TEXT_REQUEST_EVENT, function () {
+    MLC.Dispatcher.on(Constants.Events.SPAWN_TEXT_REQUEST, function () {
       if (textTools.display.visible) {
         // REJECT!
         MLC.Dispatcher.dispatchEvent(MLC.Constants.TEXT_TOOLS_HIDE);
