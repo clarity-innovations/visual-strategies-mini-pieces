@@ -78,41 +78,6 @@ define(function (require) {
     {src: 'images/tray-background/tray.png'},
     {src: 'images/tray-background/tray@2x.png'},
 
-    // {src: 'images/toggle/toggle-money-off.png'},
-    // {src: 'images/toggle/toggle-money-on.png'},
-    // {src: 'images/toggle/toggle-pieces-off.png'},
-    // {src: 'images/toggle/toggle-pieces-on.png'},
-
-    // { src: 'images/tray-buttons/button-grid-dollar.png'},
-    // { src: 'images/tray-buttons/button-grid-dollar-down.png'},
-    // { src: 'images/tray-buttons/button-currency-dollar.png'},
-    // { src: 'images/tray-buttons/button-currency-dollar-down.png'},
-
-    // { src: 'images/tray-buttons/button-grid-halfdollar.png'},
-    // { src: 'images/tray-buttons/button-grid-halfdollar-down.png'},
-    // { src: 'images/tray-buttons/button-currency-halfdollar.png'},
-    // { src: 'images/tray-buttons/button-currency-halfdollar-down.png'},
-
-    // { src: 'images/tray-buttons/button-grid-quarter.png'},
-    // { src: 'images/tray-buttons/button-grid-quarter-down.png'},
-    // { src: 'images/tray-buttons/button-currency-quarter.png'},
-    // { src: 'images/tray-buttons/button-currency-quarter-down.png'},
-
-    // { src: 'images/tray-buttons/button-grid-dime.png'},
-    // { src: 'images/tray-buttons/button-grid-dime-down.png'},
-    // { src: 'images/tray-buttons/button-currency-dime.png'},
-    // { src: 'images/tray-buttons/button-currency-dime-down.png'},
-
-    // { src: 'images/tray-buttons/button-grid-nickel.png'},
-    // { src: 'images/tray-buttons/button-grid-nickel-down.png'},
-    // { src: 'images/tray-buttons/button-currency-nickel.png'},
-    // { src: 'images/tray-buttons/button-currency-nickel-down.png'},
-
-    // { src: 'images/tray-buttons/button-grid-penny.png'},
-    // { src: 'images/tray-buttons/button-grid-penny-down.png'},
-    // { src: 'images/tray-buttons/button-currency-penny.png'},
-    // { src: 'images/tray-buttons/button-currency-penny-down.png'}
-
     {src: 'images/basicTray/button-hundreds-down@2x.png'},
     {src: 'images/basicTray/button-hundreds@2x.png'},
     {src: 'images/basicTray/button-ones-down@2x.png'},
@@ -124,72 +89,6 @@ define(function (require) {
 
     {src: 'images/counter/unit.png'},
   ];
-/*
-  var TOOLBAR_BUTTONS = [
-    {
-      selector: '#restart',
-      clickEvent: Constants.Events.REQUEST_START_OVER,
-    },
-    {
-      selector: '#rotate',
-      clickEvent: Constants.Events.TRIGGER_SELECTION_ROTATE,
-      disableEvent: Constants.Events.DISABLE_SELECTION_ROTATE,
-      enableEvent: Constants.Events.ENABLE_SELECTION_ROTATE,
-      addClassOn: [
-        {
-          eventID: Constants.Events.PIECE_MODE_SWITCH_CUR,
-          cssClass: 'down'
-        }
-      ],
-      removeClassOn: [
-        {
-          eventID: Constants.Events.PIECE_MODE_SWITCH_VAL,
-          cssClass: 'down'
-        }
-      ]
-    },
-    {
-      selector: '#duplicate',
-      clickEvent: Constants.Events.REQUEST_SELECTION_DUPLICATE,
-      disableEvent: Constants.Events.DISABLE_SELECTION_DUPLICATE,
-      enableEvent: Constants.Events.ENABLE_SELECTION_DUPLICATE
-    },
-    {
-      selector: '#text',
-      clickEvent: Constants.Events.NEW_TEXT,
-      disableEvent: Constants.Events.DISABLE_NEW_TEXT,
-      enableEvent: Constants.Events.ENABLE_NEW_TEXT
-    },
-    {
-      selector: '#draw',
-      clickEvent: Constants.Events.TOGGLE_DRAW_TOOLS,
-      addClassOn: [
-        {
-          eventID: MLC.Constants.DRAW_TOOLS_SHOW_EVENT,
-          cssClass: 'on'
-        }
-      ],
-      removeClassOn: [
-        {
-          eventID: MLC.Constants.DRAW_TOOLS_HIDE_EVENT,
-          cssClass: 'on'
-        }
-      ]
-    },
-    {
-      selector: '#trash',
-      clickEvent: Constants.Events.REQUEST_SELECTION_DELETE,
-      disableEvent: Constants.Events.DISABLE_SELECTION_DELETE,
-      enableEvent: Constants.Events.ENABLE_SELECTION_DELETE
-    },
-    {
-      selector: '#info',
-      clickEvent: Constants.Events.REQUEST_INFO,
-    },
-  ];
-
-  var TOOLBAR_POPOUTS = [];
-*/
 
   // Initialization
   $(document).ready(function () {
@@ -423,26 +322,12 @@ define(function (require) {
   function attachToolbarPopouts(toolbar) {
   }
 
-  // function buildToolbar() {
-  //   toolbar = new MLC.Toolbar({
-  //     buttons: TOOLBAR_BUTTONS,
-  //     popouts: TOOLBAR_POPOUTS
-  //   });
-
-  //   updateSelection();
-  // }
-
   function buildInfo() {
     infoPage = new MLC.InfoPage('#infopage');
   }
 
   function buildTray(){
     var counters = buildTrayItemOptions();
-    // tray = new MVPTray(MLC.Stage,
-    //   {
-    //     counters: counters
-    //   }
-    // );
     tray = new MLC.Tray(MLC.Stage,
       {
         counters: counters
@@ -579,9 +464,6 @@ define(function (require) {
 
   function bindMouseEvents() {
     // For clicks that aren't part of the canvas.
-    // $('#toolbar-shade').on('click', function() {
-    //   MLC.Dispatcher.dispatchEvent(MLC.Constants.TEXT_TOOLS_TOGGLE);
-    // });
   }
 
   function bindDispatcherEvents() {
@@ -712,8 +594,7 @@ define(function (require) {
     MLC.Dispatcher.on(Constants.Events.REQUEST_INFO, function() {
       infoPage.show();
     });
-
-    // MLC.Dispatcher.on(Constants.Events.EXCHANGE_SELECTION, exchangeSelection);
+    
 
     MLC.Dispatcher.on(MLC.Constants.RELEASE_SELECTION_EVENT, snapSelection);
     MLC.Dispatcher.on(Constants.Events.TRIGGER_PIECE_MODE_SWITCH, function(){
@@ -735,7 +616,6 @@ define(function (require) {
     });
 
     MLC.Dispatcher.on(Constants.Events.SPAWN_PIECE_FAILURE, _moneyPieceSpawnFailurePrompt);
-    // MLC.Dispatcher.on(Constants.Events.EXCHANGE_FAILURE, _exchangeFailurePrompt);
 
     MLC.Dispatcher.on(MLC.Constants.STAGE_UPDATE, positionTextTools);
   }
