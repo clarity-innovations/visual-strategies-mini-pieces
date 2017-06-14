@@ -604,7 +604,6 @@ define(function (require) {
     });
 
     MLC.Dispatcher.on(Constants.Events.TOOLBAR_CLICKED, function (event) {
-console.log('clicking toolbar!');
       var drawToolsExclusionList = [
         Constants.DRAW_TOOLS_SELECTOR
       ];
@@ -614,7 +613,6 @@ console.log('clicking toolbar!');
       ];
 
       if (!inExclusionList(drawToolsExclusionList, event)) {
-console.log('not in draw tools exclusion');
         var modeChangeEvent = new createjs.Event(MLC.Constants.DRAW_TOOLS_MODE_CHANGE_EVENT);
         modeChangeEvent.set({
           newMode: MLC.DrawTools.DrawMode.NONE
@@ -623,15 +621,16 @@ console.log('not in draw tools exclusion');
       }
 
       if (!inExclusionList(textToolsExclusionList, event)) {
-console.log('not in text tools exclusion');
-        MLC.Dispatcher.dispatchEvent(new createjs.Event(MLC.Constants.TEXT_TOOLS_HIDE));
+        if (textTools.display.visible) {
+          MLC.Dispatcher.dispatchEvent(new createjs.Event(MLC.Constants.TEXT_TOOLS_HIDE));
 
-        var selectEvent = new createjs.Event(MLC.Constants.SELECT_ENTITY_EVENT);
-        selectEvent.set({
-          ids: []
-        });
-        MLC.Dispatcher.dispatchEvent(selectEvent);
+          var selectEvent = new createjs.Event(MLC.Constants.SELECT_ENTITY_EVENT);
+          selectEvent.set({
+            ids: []
+          });
+          MLC.Dispatcher.dispatchEvent(selectEvent);
         }
+      }
     });
 
     MLC.Dispatcher.on(MLC.Constants.SPAWN_TEXT_EVENT, spawnTextEntity, this);
@@ -742,9 +741,7 @@ console.log('not in text tools exclusion');
   }
 
   function inExclusionList(list, event) {
-console.log(event);
     var inExclusionList = _.any(event.parentSelectors, function (selector) {
-console.log(selector);
       return _.contains(list, selector);
     });
     return inExclusionList;
