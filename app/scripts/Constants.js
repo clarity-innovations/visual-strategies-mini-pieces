@@ -3,6 +3,7 @@ define(function(){
 
   var constants = {
 
+    TOOLBAR_SELECTOR: '#toolbar',
   	START_OVER_SELECTOR: '#restart',
   	DUPLICATE_SELECTOR: '#duplicate',
   	ROTATE_SELECTOR: '#rotate',
@@ -11,6 +12,8 @@ define(function(){
   	DELETE_SELECTOR: '#trash',
 
     Events: {
+      TOOLBAR_CLICKED: 'toolbarclicked',
+
       TRIGGER_SELECTION_ROTATE: 'mvptriggerrotateselection',
       SELECTION_ROTATE: 'mvprotateselection',
       DISABLE_SELECTION_ROTATE: 'disableselectionrotate',

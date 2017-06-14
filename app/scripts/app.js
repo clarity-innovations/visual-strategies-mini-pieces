@@ -380,7 +380,7 @@ define(function (require) {
     toolbar = new MLC.Toolbar({
       parent: {
         selector: Constants.TOOLBAR_SELECTOR,
-        clickEvent: Constants.TOOLBAR_CLICKED_EVENT
+        clickEvent: Constants.Events.TOOLBAR_CLICKED
       }
     });
 
@@ -586,6 +586,54 @@ define(function (require) {
 
   function bindDispatcherEvents() {
 
+    MLC.Dispatcher.on(MLC.Constants.TRAY_MOUSE_DOWN_EVENT, function (event) {
+      var modeChangeEvent = new createjs.Event(MLC.Constants.DRAW_TOOLS_MODE_CHANGE_EVENT);
+      modeChangeEvent.set({
+        newMode: MLC.DrawTools.DrawMode.NONE
+      });
+      MLC.Dispatcher.dispatchEvent(modeChangeEvent);      
+      MLC.Dispatcher.dispatchEvent(new createjs.Event(MLC.Constants.TEXT_TOOLS_HIDE));
+
+      MLC.Dispatcher.dispatchEvent(new createjs.Event(MLC.Constants.TEXT_TOOLS_HIDE));
+
+      var selectEvent = new createjs.Event(MLC.Constants.SELECT_ENTITY_EVENT);
+      selectEvent.set({
+        ids: []
+      });
+      MLC.Dispatcher.dispatchEvent(selectEvent);
+    });
+
+    MLC.Dispatcher.on(Constants.Events.TOOLBAR_CLICKED, function (event) {
+console.log('clicking toolbar!');
+      var drawToolsExclusionList = [
+        Constants.DRAW_TOOLS_SELECTOR
+      ];
+
+      var textToolsExclusionList = [
+        Constants.TEXT_TOOLS_SELECTOR
+      ];
+
+      if (!inExclusionList(drawToolsExclusionList, event)) {
+console.log('not in draw tools exclusion');
+        var modeChangeEvent = new createjs.Event(MLC.Constants.DRAW_TOOLS_MODE_CHANGE_EVENT);
+        modeChangeEvent.set({
+          newMode: MLC.DrawTools.DrawMode.NONE
+        });
+        MLC.Dispatcher.dispatchEvent(modeChangeEvent);
+      }
+
+      if (!inExclusionList(textToolsExclusionList, event)) {
+console.log('not in text tools exclusion');
+        MLC.Dispatcher.dispatchEvent(new createjs.Event(MLC.Constants.TEXT_TOOLS_HIDE));
+
+        var selectEvent = new createjs.Event(MLC.Constants.SELECT_ENTITY_EVENT);
+        selectEvent.set({
+          ids: []
+        });
+        MLC.Dispatcher.dispatchEvent(selectEvent);
+        }
+    });
+
     MLC.Dispatcher.on(MLC.Constants.SPAWN_TEXT_EVENT, spawnTextEntity, this);
 
     MLC.Dispatcher.on(MLC.Constants.TEXT_TOOLS_WRITE, function(event) {
@@ -691,6 +739,15 @@ define(function (require) {
     // MLC.Dispatcher.on(Constants.Events.EXCHANGE_FAILURE, _exchangeFailurePrompt);
 
     MLC.Dispatcher.on(MLC.Constants.STAGE_UPDATE, positionTextTools);
+  }
+
+  function inExclusionList(list, event) {
+console.log(event);
+    var inExclusionList = _.any(event.parentSelectors, function (selector) {
+console.log(selector);
+      return _.contains(list, selector);
+    });
+    return inExclusionList;
   }
 
   function buildManifest(){
