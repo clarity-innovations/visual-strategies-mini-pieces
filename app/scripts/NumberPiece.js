@@ -19,16 +19,6 @@ define(function(require) {
   var ROTATE_HANDLE_WIDTH = 50;
   var HANDLE_PADDING = 0;
 
-  var FRAGMENT_COLOR_ALPHA = 0.6;
-  var FRAGMENT_UNCOLOR_ALPHA = 0.3;
-
-  var FRAGMENT_TYPE = {
-    bar: 'bar',
-    arc: 'arc'
-  };
-
-  var LABEL_FRACTION_SPACING = 5;
-
   var CIRCLE_IN_RADIANS = 2*Math.PI;
   var CIRCLE_ROTATION_SNAP_THRESHOLD = parseInt(Math.random() * 3) + 3;
   var SELECTED_BORDER_COLOR = MLC.Constants.COLOR_PRIMARY_LIGHT;
