@@ -88,6 +88,8 @@ define(function (require) {
     {src: 'images/basicTray/button-tens-vert@2x.png'},
 
     {src: 'images/counter/unit.png'},
+    {src: 'images/toolbar/icon-trash.png'},
+    {src: 'images/toolbar/icon-trash-down.png'},
   ];
 
   // Initialization
@@ -328,9 +330,26 @@ define(function (require) {
 
   function buildTray(){
     var counters = buildTrayItemOptions();
+    // var buttons = buildTrayButtonOptions();
+    var buttons = [
+      {
+        buttonType: MLC.Button.ButtonTypes.ICON,
+
+        // defaultImage: MLC.Loader.getResult('ui', 'images/toolbar/icon-trash.png'),
+        // activeImage: MLC.Loader.getResult('ui', 'images/toolbar/icon-trash-down.png'),
+        defaultImage: 'images/toolbar/icon-trash.png',
+        activeImage: 'images/toolbar/icon-trash-down.png',
+        leftPadding: 24,
+        topPadding: 24,
+        clickCallback: function (event) {
+          MLC.Dispatcher.dispatchEvent(MLC.Constants.DELETE_SELECTION_PROMPT_EVENT);
+        }
+      }
+    ];
     tray = new MLC.Tray(MLC.Stage,
       {
-        counters: counters
+        counters: counters,
+        buttons: buttons
       }
     );
   }
@@ -594,7 +613,7 @@ define(function (require) {
     MLC.Dispatcher.on(Constants.Events.REQUEST_INFO, function() {
       infoPage.show();
     });
-    
+
 
     MLC.Dispatcher.on(MLC.Constants.RELEASE_SELECTION_EVENT, snapSelection);
     MLC.Dispatcher.on(Constants.Events.TRIGGER_PIECE_MODE_SWITCH, function(){

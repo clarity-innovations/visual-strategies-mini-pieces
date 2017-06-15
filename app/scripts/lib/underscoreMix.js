@@ -124,7 +124,7 @@ define(['underscore', 'createjs'], function (_, createjs) {
       }
 
       if (!shouldScale || !hasBounds) {
-        _.log('Underscore-Mix', 'scaleImage', 'Failed to scale image.');  
+        // _.log('Underscore-Mix', 'scaleImage', 'Failed to scale image.');  
       }
     },
 
