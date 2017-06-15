@@ -14,6 +14,7 @@ define(function (require) {
   var TextEntity = require('mlcOptional/TextEntity');
   var IPadCheck = require('mlcOptional/IPadCheck');
 
+  var isMiniPieces = false;
   var page;
   var toolbar;
   var infoPage;
@@ -112,18 +113,22 @@ define(function (require) {
   });
 
   function init() {
+    isMiniPieces = $('.mini-pieces').length > 0;
+
     spinner.start();
     loadManifests().then(
-      function(){
+      function() {
         buildPage();
-        buildToolbar();
+        if (!isMiniPieces) {
+          buildToolbar();
+        }
         buildInfo();
         buildPalettes();
         bindKeyboardEvents();
         bindMouseEvents();
         bindDispatcherEvents();
       },
-      function(error){
+      function(error) {
         console.log(error);
       }
     ).then(function () {

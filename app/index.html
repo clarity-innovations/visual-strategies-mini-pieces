@@ -20,7 +20,7 @@
         <link rel="stylesheet" href="styles/compiled/main.css">
         <!-- endbuild -->
     </head>
-    <body>
+    <body class="mini-pieces">
     <!-- Build version: @@version -->
 
       <div id="templates">
@@ -33,6 +33,7 @@
       <main>
         <div id="loading-spinner"></div>
         <canvas id="canvas"></canvas>
+
         <menu type="toolbar" id="toolbar" class="">
           <div class="toolbar_spacer"></div>
 
@@ -42,71 +43,7 @@
           </div>
 
           <div class="divider"></div>
-<!-- 
-          <div class="button-group single popout-group">
-            <button id="exchange" class="toolbar-button wide" title="Exchange"></button>
-            <div id="exchange-container" class="modal-dialog">
 
-              <div id="exchange-popout" class="popout hidden">
-                <div class="top header" title="Exchange Currency">
-                  <div class="title">Exchange For:</div>
-                  <div class="last close-button">Cancel</div>
-                </div>
-                <div class="content">
-                  <ul>
-                    <li id="exchangePennies" class="exchange-value" data-value="penny" title="Pennies">
-                      <img src="images/currency/currency-front-penny@2x.png" alt="Pennies" />
-                      <span>Pennies</span>
-                      <span class="coin-value">1¢</span>
-                    </li>
-                    <li id="exchangeNickels" class="exchange-value" data-value="nickel" title="Nickels">
-                      <img src="images/currency/currency-front-nickel@2x.png" alt="Pennies" />
-                      <span>Nickels</span>
-                      <span class="coin-value">5¢</span>
-                    </li>
-                    <li id="exchangeDimes" class="exchange-value last" data-value="dime" title="Dimes">
-                      <img src="images/currency/currency-front-dime@2x.png" alt="Pennies" />
-                      <span>Dimes</span>
-                      <span class="coin-value">10¢</span>
-                    </li>
-                    <li id="exchangeQuarters" class="exchange-value" data-value="quarter" title="Quarters">
-                      <img src="images/currency/currency-front-quarter@2x.png" alt="Pennies" />
-                      <span>Quarters</span>
-                      <span class="coin-value">25¢</span>
-                    </li>
-                    <li id="exchangeHalfDollars" class="exchange-value" data-value="halfdollar" title="Half Dollars">
-                      <img src="images/currency/currency-front-half-dollar@2x.png" alt="Pennies" />
-                      <span>Half Dollars</span>
-                      <span class="coin-value">50¢</span>
-                    </li>
-                    <li id="exchangeDollars" class="exchange-value last" data-value="dollar" title="Dollars">
-                      <img src="images/currency/currency-front-dollar@2x.png" alt="Pennies" />
-                      <span>Dollars</span>
-                      <span class="coin-value">100¢</span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="bottom footer">
-                  <div class="list-end"></div>
-                  <div class="arrow"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
- -->
- <!-- 
-          <div id="shade-buttons" class="button-group">
-            <button id="shade-question" class="toolbar-button narrow" title="Shade"></button>
-            <button id="shade-hand-right" class="toolbar-button narrow" title="Shade"></button>
-            <button id="shade-hand-left" class="toolbar-button narrow" title="Shade"></button>
-            <button id="shade-pocket" class="toolbar-button narrow" title="Shade"></button>
-            <button id="shade-bank" class="toolbar-button narrow" title="Shade"></button>
-          </div>
-
-          <div class="divider"></div>
- -->
           <div class="button-group">
             <button id="duplicate" class="toolbar-button" title="Duplicate"></button>
             <!-- <button id="flip" class="toolbar-button" title="Flip"></button> -->
