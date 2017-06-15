@@ -335,8 +335,8 @@ define(function (require) {
       {
         buttonType: MLC.Button.ButtonTypes.ICON,
 
-        // defaultImage: MLC.Loader.getResult('ui', 'images/toolbar/icon-trash.png'),
-        // activeImage: MLC.Loader.getResult('ui', 'images/toolbar/icon-trash-down.png'),
+        fillColor: 'transparent',
+
         defaultImage: 'images/toolbar/icon-trash.png',
         activeImage: 'images/toolbar/icon-trash-down.png',
         leftPadding: 24,
